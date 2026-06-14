@@ -22,10 +22,15 @@ const app = initializeApp(firebaseConfig);
 let firestoreInstance;
 let resolvedDbName = "(default)";
 
+console.log("Using Default Firestore Database");
+console.log(`Active Firebase Project ID: ${firebaseConfig.projectId || "organic-gamma-m6m9v"}`);
+console.log(`Firestore Database Name: ${resolvedDbName}`);
+
 try {
   firestoreInstance = getFirestore(app);
 } catch (error) {
-  console.warn("Firestore default initialization failed, attempting fallback:", error);
+  console.warn("Firestore default initialization failed, attempting fallback to default:", error);
+  resolvedDbName = "(default)";
   firestoreInstance = getFirestore(app);
 }
 
