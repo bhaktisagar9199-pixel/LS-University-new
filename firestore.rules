@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 1. Global Safety Net - Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- PRIMITIVE HELPERS ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return isSignedIn() && (
+        request.auth.token.email_verified == true || 
+        request.auth.token.email == "bhaktisagar9199@gmail.com"
+      );
+    }
+
+    function isBootstrappedAdmin() {
+      return isSignedIn() && request.auth.token.email == "bhaktisagar9199@gmail.com";
+    }
+
+    function isAdminUser() {
+      return isSignedIn();
+    }
+
+    function isSuperAdminOrAdmin() {
+      return isSignedIn();
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --- SITE CONFIG RULES ---
+    match /site_config/{configId} {
+      allow read: if true;
+      allow write: if isAdminUser() && isValidId(configId);
+    }
+
+    // --- PAGES RULES ---
+    match /pages/{pageId} {
+      allow read: if true; // Public site reads pages dynamically
+      allow write: if isAdminUser() && isValidId(pageId);
+    }
+
+    // --- COURSES RULES ---
+    match /courses/{courseId} {
+      allow read: if true; // Public course catalogue
+      allow write: if isAdminUser() && isValidId(courseId);
+    }
+
+    // --- CERTIFICATES RULES ---
+    match /certificates/{certId} {
+      allow read: if true; // Anyone can verify a certificate by looking it up
+      allow write: if isSuperAdminOrAdmin() && isValidId(certId);
+    }
+
+    // --- NOTICES RULES (BULLET TIMES) ---
+    match /notices/{noticeId} {
+      allow read: if true; // Anyone can read bulletins
+      allow write: if isAdminUser() && isValidId(noticeId);
+    }
+
+    // --- MEDIA ITEMS ---
+    match /media/{mediaId} {
+      allow read: if true; // Images/PDF links are accessible
+      allow write: if isAdminUser() && isValidId(mediaId);
+    }
+
+    // --- ADMIN USERS ROLES ---
+    match /admin_users/{userId} {
+      allow read: if isSignedIn(); 
+      allow create: if isSignedIn() && isValidId(userId);
+      allow update, delete: if isSignedIn() && isValidId(userId);
+    }
+  }
+}

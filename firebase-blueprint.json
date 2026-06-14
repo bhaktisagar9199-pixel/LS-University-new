@@ -1,0 +1,281 @@
+{
+  "entities": {
+    "site_config": {
+      "title": "Site Config",
+      "description": "Global configuration representing theme, header, footer, mega menus, logos, colors, rankings, and credentials.",
+      "type": "object",
+      "properties": {
+        "universityName": {
+          "type": "string",
+          "description": "Name of the university"
+        },
+        "logoUrl": {
+          "type": "string",
+          "description": "Primary logo URL of the university"
+        },
+        "goldAccentColor": {
+          "type": "string",
+          "description": "Primary gold color representation (e.g. HEX)"
+        },
+        "primaryThemeColor": {
+          "type": "string",
+          "description": "Primary theme color representation (e.g. Deep Blue HEX)"
+        },
+        "accreditationBadge": {
+          "type": "string",
+          "description": "Accreditation and ranking details (e.g., NAAC A++, NBA Accredited)"
+        },
+        "seoTitle": {
+          "type": "string",
+          "description": "Global SEO home page title"
+        },
+        "seoDescription": {
+          "type": "string",
+          "description": "Global SEO Description"
+        },
+        "contactEmail": {
+          "type": "string",
+          "description": "Official contact email address"
+        },
+        "contactPhone": {
+          "type": "string",
+          "description": "Official phone line"
+        },
+        "address": {
+          "type": "string",
+          "description": "Official postal address"
+        },
+        "socialLinks": {
+          "type": "array",
+          "description": "Social media channel URLs"
+        },
+        "menuItems": {
+          "type": "array",
+          "description": "Global navigation menu list including mega-menu categories"
+        }
+      },
+      "required": [
+        "universityName",
+        "primaryThemeColor",
+        "contactEmail"
+      ]
+    },
+    "pages": {
+      "title": "Pages",
+      "description": "Individual dynamic page configurations carrying custom sections, layouts, and page content.",
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string",
+          "description": "URL path slug (e.g., about, admissions)"
+        },
+        "title": {
+          "type": "string",
+          "description": "Display title of the page"
+        },
+        "seoTitle": {
+          "type": "string",
+          "description": "SEO Search result title"
+        },
+        "seoDesc": {
+          "type": "string",
+          "description": "SEO Search result description"
+        },
+        "published": {
+          "type": "boolean",
+          "description": "Whether the page is publicly viewable"
+        },
+        "sections": {
+          "type": "array",
+          "description": "Array of layout sections (e.g., Hero, StatCounter, Slider, InfoPanel)"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "slug",
+        "title",
+        "sections",
+        "published"
+      ]
+    },
+    "courses": {
+      "title": "Courses",
+      "description": "Full dynamic list of university programs and degrees offered.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Course name (e.g., B.Tech Computer Science)"
+        },
+        "code": {
+          "type": "string",
+          "description": "Course code (e.g., BTECH-CS)"
+        },
+        "level": {
+          "type": "string",
+          "description": "UG, PG, Diploma, PhD"
+        },
+        "duration": {
+          "type": "string",
+          "description": "Length of program (e.g. 4 Years / 8 Semesters)"
+        },
+        "eligibility": {
+          "type": "string",
+          "description": "Minimum educational requirement"
+        },
+        "fees": {
+          "type": "string",
+          "description": "Annual/Semester fee description"
+        },
+        "description": {
+          "type": "string"
+        },
+        "branches": {
+          "type": "array",
+          "description": "Optional branches/specializations"
+        }
+      },
+      "required": [
+        "name",
+        "code",
+        "level",
+        "duration"
+      ]
+    },
+    "certificates": {
+      "title": "Certificates",
+      "description": "Student verification records allowing employers to verify diplomas and grades.",
+      "type": "object",
+      "properties": {
+        "certificateNo": {
+          "type": "string",
+          "description": "Unique key matching credential registration"
+        },
+        "enrollmentNo": {
+          "type": "string",
+          "description": "Student registration/roll number"
+        },
+        "studentName": {
+          "type": "string",
+          "description": "Legal student name"
+        },
+        "course": {
+          "type": "string",
+          "description": "Course/Degree verified"
+        },
+        "issueDate": {
+          "type": "string",
+          "description": "Formatted date of issue"
+        },
+        "grade": {
+          "type": "string",
+          "description": "CGPA / Division"
+        },
+        "status": {
+          "type": "string",
+          "description": "Verifications status (e.g. Verified, Revoked)"
+        }
+      },
+      "required": [
+        "certificateNo",
+        "enrollmentNo",
+        "studentName",
+        "course"
+      ]
+    },
+    "media": {
+      "title": "Media Manager",
+      "description": "Dynamic references to university pictures, assets, catalogs, and media uploads.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "description": "File or image access URL"
+        },
+        "folder": {
+          "type": "string",
+          "description": "Organized tag: Gallery, Courses, Notices, Admissions, Certificates"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "url",
+        "folder"
+      ]
+    },
+    "admin_users": {
+      "title": "Admin Users",
+      "description": "Authorized administrators permitted to access the secure CMS, manage modules, and issue certificates.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "Super Admin",
+            "Admin",
+            "Editor"
+          ]
+        },
+        "displayName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "uid",
+        "email",
+        "role"
+      ]
+    }
+  },
+  "firestore": {
+    "/site_config/{configId}": {
+      "schema": "site_config",
+      "description": "Main global settings"
+    },
+    "/pages/{pageId}": {
+      "schema": "pages",
+      "description": "Sitemap dynamic pages"
+    },
+    "/courses/{courseId}": {
+      "schema": "courses",
+      "description": "Degree catalog"
+    },
+    "/certificates/{certId}": {
+      "schema": "certificates",
+      "description": "Credential registry for verifications"
+    },
+    "/media/{mediaId}": {
+      "schema": "media",
+      "description": "Global visual/pdf uploads"
+    },
+    "/admin_users/{userId}": {
+      "schema": "admin_users",
+      "description": "Privileged users for CMS operations"
+    }
+  }
+}
