@@ -2,29 +2,58 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore, doc, getDocFromServer } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import firebaseConfigFromJson from "../firebase-applet-config.json";
 
-// Dynamic configuration supporting both Next-style credentials and auto-provisioned studio settings
-const metaEnv = (import.meta as any).env || {};
+// Safely access process.env in a browser/micro-service environment
+const safeProcessEnv = typeof process !== "undefined" && process.env ? process.env : {} as Record<string, string>;
+const safeMetaEnv = (import.meta as any).env || {};
+
+// Use environment variables only. Prioritize VITE_ keys, fallback to NEXT_PUBLIC_ keys
 const firebaseConfig = {
-  apiKey: metaEnv.NEXT_PUBLIC_FIREBASE_API_KEY || metaEnv.VITE_FIREBASE_API_KEY || firebaseConfigFromJson.apiKey,
-  authDomain: metaEnv.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || metaEnv.VITE_FIREBASE_AUTH_DOMAIN || firebaseConfigFromJson.authDomain,
-  projectId: metaEnv.NEXT_PUBLIC_FIREBASE_PROJECT_ID || metaEnv.VITE_FIREBASE_PROJECT_ID || firebaseConfigFromJson.projectId,
-  storageBucket: metaEnv.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || metaEnv.VITE_FIREBASE_STORAGE_BUCKET || firebaseConfigFromJson.storageBucket,
-  messagingSenderId: metaEnv.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || metaEnv.VITE_FIREBASE_MESSAGING_SENDER_ID || firebaseConfigFromJson.messagingSenderId,
-  appId: metaEnv.NEXT_PUBLIC_FIREBASE_APP_ID || metaEnv.VITE_FIREBASE_APP_ID || firebaseConfigFromJson.appId
+  apiKey: safeMetaEnv.VITE_FIREBASE_API_KEY || safeProcessEnv.NEXT_PUBLIC_FIREBASE_API_KEY || "",
+  authDomain: safeMetaEnv.VITE_FIREBASE_AUTH_DOMAIN || safeProcessEnv.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "",
+  projectId: safeMetaEnv.VITE_FIREBASE_PROJECT_ID || safeProcessEnv.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "",
+  storageBucket: safeMetaEnv.VITE_FIREBASE_STORAGE_BUCKET || safeProcessEnv.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "",
+  messagingSenderId: safeMetaEnv.VITE_FIREBASE_MESSAGING_SENDER_ID || safeProcessEnv.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "",
+  appId: safeMetaEnv.VITE_FIREBASE_APP_ID || safeProcessEnv.NEXT_PUBLIC_FIREBASE_APP_ID || "",
 };
 
-const app = initializeApp(firebaseConfig);
+// Startup Validation
+const missingVars: string[] = [];
+if (!firebaseConfig.apiKey) missingVars.push("VITE_FIREBASE_API_KEY / NEXT_PUBLIC_FIREBASE_API_KEY");
+if (!firebaseConfig.authDomain) missingVars.push("VITE_FIREBASE_AUTH_DOMAIN / NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN");
+if (!firebaseConfig.projectId) missingVars.push("VITE_FIREBASE_PROJECT_ID / NEXT_PUBLIC_FIREBASE_PROJECT_ID");
+if (!firebaseConfig.storageBucket) missingVars.push("VITE_FIREBASE_STORAGE_BUCKET / NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET");
+if (!firebaseConfig.messagingSenderId) missingVars.push("VITE_FIREBASE_MESSAGING_SENDER_ID / NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID");
+if (!firebaseConfig.appId) missingVars.push("VITE_FIREBASE_APP_ID / NEXT_PUBLIC_FIREBASE_APP_ID");
 
-// Task 2, 3, 4, 8, 9: Ensure Firebase initialization uses getFirestore(app) (default database)
-console.log("Using Default Firestore Database");
-console.log(`Active Firebase Project ID: ${firebaseConfig.projectId || "organic-gamma-m6m9v"}`);
-console.log("Firestore Database Name: (default)");
+export const firebaseEnvError = missingVars.length > 0
+  ? `Missing required Firebase Environment Variables:\n${missingVars.map(v => `- ${v}`).join("\n")}`
+  : null;
+
+if (firebaseEnvError) {
+  console.error("Firebase Configuration Error on Startup:\n" + firebaseEnvError);
+} else {
+  console.log("Using Default Firestore Database");
+  console.log(`Active Firebase Project ID: ${firebaseConfig.projectId}`);
+  console.log("Firestore Database Name: (default)");
+}
+
+// To prevent React app compile/boot crash if variables are not yet injected,
+// we supply dummy values when keys are missing.
+const finalConfig = firebaseEnvError ? {
+  apiKey: "dummy-api-key",
+  authDomain: "dummy-auth-domain",
+  projectId: "dummy-project-id",
+  storageBucket: "dummy-storage-bucket",
+  messagingSenderId: "1234567890",
+  appId: "1:1234567890:web:dummy"
+} : firebaseConfig;
+
+const app = initializeApp(finalConfig);
 
 export const db = getFirestore(app);
 export const firebaseMetadata = {
-  projectId: firebaseConfig.projectId || "organic-gamma-m6m9v",
+  projectId: finalConfig.projectId || "organic-gamma-m6m9v",
   databaseName: "(default)"
 };
 

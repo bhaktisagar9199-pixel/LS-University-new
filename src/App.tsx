@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { onSnapshot, collection, doc } from "firebase/firestore";
-import { db, handleFirestoreError, OperationType, firebaseMetadata } from "./firebase";
+import { db, handleFirestoreError, OperationType, firebaseMetadata, firebaseEnvError } from "./firebase";
 import { SiteConfig, PageData, Course, Certificate, Notice } from "./types";
 import { 
   DEFAULT_SITE_CONFIG, DEFAULT_PAGES, DEMO_COURSES, DEMO_CERTIFICATES, DEMO_NOTICES 
@@ -189,6 +189,34 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#030712] text-white flex flex-col font-sans selection:bg-[#D4AF37] selection:text-black" id="applet-root">
       
+      {firebaseEnvError && (
+        <div className="bg-[#1C160C] border-b border-[#D4AF37]/30 text-white p-4 font-mono text-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-lg backdrop-blur-md" id="firebase-env-error-banner">
+          <div className="flex-1 space-y-2">
+            <div className="flex items-center gap-2 text-[#D4AF37] font-bold uppercase tracking-wider text-[11px]">
+              <span className="h-2 w-2 rounded-full bg-[#D4AF37] animate-pulse inline-block" />
+              Environment Configuration Guide
+            </div>
+            <p className="text-gray-300 leading-relaxed max-w-4xl font-sans text-[11px]">
+              The application is currently running with standard fallback values. To connect your production database instance, specify these values as Environment Variables in your project dashboard (e.g., local <code className="text-[#D4AF37] bg-black/40 px-1 py-0.5 rounded font-mono font-bold">.env</code> configuration or <code className="text-[#D4AF37] font-bold">Vercel &rarr; Settings &rarr; Environment Variables</code>):
+            </p>
+            <div className="flex flex-wrap gap-2 pt-1">
+              {firebaseEnvError.split("\n").slice(1).map((errLine, i) => {
+                const varName = errLine.replace("- ", "");
+                return (
+                  <span key={i} className="bg-black/40 border border-[#D4AF37]/20 text-[#D4AF37] px-2.5 py-1 rounded text-[9px] uppercase font-bold tracking-wider">
+                    {varName}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+          <div className="text-[10px] text-gray-400 font-mono text-left md:text-right border-l md:border-l-0 md:border-r border-white/10 pl-3 md:pl-0 md:pr-4 py-1 self-stretch flex flex-col justify-center">
+            <div>Verification: <span className="text-[#D4AF37] font-bold">Awaiting Setup</span></div>
+            <div>Platform: <span className="text-indigo-400 font-bold">Vercel Compatible</span></div>
+          </div>
+        </div>
+      )}
+
       {/* Renders global header navigation unless user is operating the specialized tall CMS workspace */}
       {!isCmsLayout && (
         <Header 
