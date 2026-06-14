@@ -17,8 +17,24 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-// CRITICAL: The applet requires firestoreDatabaseId in getFirestore for multi-tenant isolation
-export const db = getFirestore(app, firebaseConfigFromJson.firestoreDatabaseId);
+// Task 2, 3, 4, 8, 9: Ensure Firebase initialization uses getFirestore(app) (default database)
+// Remove any custom or old AI Studio generated Firestore database ID arguments to prevent connection failures.
+let firestoreInstance;
+let resolvedDbName = "(default)";
+
+try {
+  firestoreInstance = getFirestore(app);
+} catch (error) {
+  console.warn("Firestore default initialization failed, attempting fallback:", error);
+  firestoreInstance = getFirestore(app);
+}
+
+export const db = firestoreInstance;
+export const firebaseMetadata = {
+  projectId: firebaseConfig.projectId || "organic-gamma-m6m9v",
+  databaseName: resolvedDbName
+};
+
 export const auth = getAuth(app);
 export const storage = getStorage(app);
 

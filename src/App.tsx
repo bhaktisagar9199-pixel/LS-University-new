@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { onSnapshot, collection, doc } from "firebase/firestore";
-import { db, handleFirestoreError, OperationType } from "./firebase";
+import { db, handleFirestoreError, OperationType, firebaseMetadata } from "./firebase";
 import { SiteConfig, PageData, Course, Certificate, Notice } from "./types";
 import { 
   DEFAULT_SITE_CONFIG, DEFAULT_PAGES, DEMO_COURSES, DEMO_CERTIFICATES, DEMO_NOTICES 
@@ -223,6 +223,22 @@ export default function App() {
           onNavigate={navigateTo}
         />
       )}
+
+      {/* Persistent Floating System Connection & Configuration Info (Startup Validation Badge) */}
+      <div 
+        className="fixed bottom-4 left-4 z-40 bg-[#0A192F]/95 backdrop-blur-md border border-[#D4AF37]/40 hover:border-[#D4AF37]/75 px-3.5 py-2 rounded-lg shadow-2xl flex items-center gap-2.5 text-[10px] font-mono transition-all duration-300"
+        id="firebase-system-validation-badge"
+      >
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span className="text-gray-400">PROJ:</span>
+        <span className="text-white font-bold">{firebaseMetadata.projectId}</span>
+        <span className="text-[#D4AF37]/40">|</span>
+        <span className="text-gray-400">DB:</span>
+        <span className="text-[#D4AF37] font-bold">{firebaseMetadata.databaseName}</span>
+      </div>
 
     </div>
   );

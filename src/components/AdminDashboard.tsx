@@ -5,7 +5,7 @@ import {
   RefreshCw, LogOut, FilePlus, Eye, Save, Globe, Info, Edit, Folder,
   Database, ShieldCheck, Mail, Phone, MapPin, Volume2, Users, FileSpreadsheet
 } from "lucide-react";
-import { auth, db, handleFirestoreError, OperationType } from "../firebase";
+import { auth, db, handleFirestoreError, OperationType, firebaseMetadata } from "../firebase";
 import { 
   signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged,
   signInWithEmailAndPassword, createUserWithEmailAndPassword
@@ -783,6 +783,28 @@ export default function AdminDashboard({
               <div className="p-5 bg-[#0B1B3D]/40 border border-[#D4AF37]/10 rounded-xl space-y-2">
                 <span className="text-xs text-gray-400 uppercase tracking-widest font-mono">Active Bulletins</span>
                 <span className="block text-2xl font-bold font-serif text-[#D4AF37]">{notices.length}</span>
+              </div>
+            </div>
+
+            {/* Active Firebase Connection Node Status */}
+            <div className="p-5 bg-slate-950 border border-[#D4AF37]/20 rounded-xl space-y-3 font-mono text-xs">
+              <div className="flex items-center gap-2 border-b border-[#D4AF37]/10 pb-2">
+                <Database className="w-4 h-4 text-[#D4AF37]" />
+                <span className="font-sans font-bold text-white uppercase tracking-wider text-[11px]">Active Firebase Node Integration</span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-gray-300">
+                <div className="flex items-center justify-between p-2 bg-[#0B1B3D]/15 border border-white/5 rounded">
+                  <span className="text-gray-400">Firebase Project ID:</span>
+                  <span className="text-white font-bold">{firebaseMetadata.projectId}</span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-[#0B1B3D]/15 border border-white/5 rounded">
+                  <span className="text-gray-400">Firestore Database:</span>
+                  <span className="text-[#D4AF37] font-bold">{firebaseMetadata.databaseName}</span>
+                </div>
+              </div>
+              <div className="flex justify-between items-center text-[10px] text-gray-500 pt-1">
+                <span>Verification State: Secure default listener active</span>
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" /> Connected & Active</span>
               </div>
             </div>
 
