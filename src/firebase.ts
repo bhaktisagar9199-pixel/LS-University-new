@@ -18,26 +18,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Task 2, 3, 4, 8, 9: Ensure Firebase initialization uses getFirestore(app) (default database)
-// Remove any custom or old AI Studio generated Firestore database ID arguments to prevent connection failures.
-let firestoreInstance;
-let resolvedDbName = "(default)";
-
 console.log("Using Default Firestore Database");
 console.log(`Active Firebase Project ID: ${firebaseConfig.projectId || "organic-gamma-m6m9v"}`);
-console.log(`Firestore Database Name: ${resolvedDbName}`);
+console.log("Firestore Database Name: (default)");
 
-try {
-  firestoreInstance = getFirestore(app);
-} catch (error) {
-  console.warn("Firestore default initialization failed, attempting fallback to default:", error);
-  resolvedDbName = "(default)";
-  firestoreInstance = getFirestore(app);
-}
-
-export const db = firestoreInstance;
+export const db = getFirestore(app);
 export const firebaseMetadata = {
   projectId: firebaseConfig.projectId || "organic-gamma-m6m9v",
-  databaseName: resolvedDbName
+  databaseName: "(default)"
 };
 
 export const auth = getAuth(app);
