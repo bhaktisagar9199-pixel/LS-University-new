@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, doc, getDocFromServer } from "firebase/firestore";
+import { getFirestore, doc, getDocFromServer, initializeFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 // Safely access process.env in a browser/micro-service environment
@@ -9,12 +9,12 @@ const safeMetaEnv = (import.meta as any).env || {};
 
 // Use environment variables only. Prioritize VITE_ keys, fallback to NEXT_PUBLIC_ keys
 const firebaseConfig = {
-  apiKey: safeMetaEnv.VITE_FIREBASE_API_KEY || safeProcessEnv.NEXT_PUBLIC_FIREBASE_API_KEY || "",
-  authDomain: safeMetaEnv.VITE_FIREBASE_AUTH_DOMAIN || safeProcessEnv.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "",
-  projectId: safeMetaEnv.VITE_FIREBASE_PROJECT_ID || safeProcessEnv.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "",
-  storageBucket: safeMetaEnv.VITE_FIREBASE_STORAGE_BUCKET || safeProcessEnv.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "",
-  messagingSenderId: safeMetaEnv.VITE_FIREBASE_MESSAGING_SENDER_ID || safeProcessEnv.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "",
-  appId: safeMetaEnv.VITE_FIREBASE_APP_ID || safeProcessEnv.NEXT_PUBLIC_FIREBASE_APP_ID || "",
+  apiKey: safeMetaEnv.VITE_FIREBASE_API_KEY || safeMetaEnv.NEXT_PUBLIC_FIREBASE_API_KEY || safeProcessEnv.NEXT_PUBLIC_FIREBASE_API_KEY || safeProcessEnv.VITE_FIREBASE_API_KEY || "",
+  authDomain: safeMetaEnv.VITE_FIREBASE_AUTH_DOMAIN || safeMetaEnv.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || safeProcessEnv.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || safeProcessEnv.VITE_FIREBASE_AUTH_DOMAIN || "",
+  projectId: safeMetaEnv.VITE_FIREBASE_PROJECT_ID || safeMetaEnv.NEXT_PUBLIC_FIREBASE_PROJECT_ID || safeProcessEnv.NEXT_PUBLIC_FIREBASE_PROJECT_ID || safeProcessEnv.VITE_FIREBASE_PROJECT_ID || "",
+  storageBucket: safeMetaEnv.VITE_FIREBASE_STORAGE_BUCKET || safeMetaEnv.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || safeProcessEnv.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || safeProcessEnv.VITE_FIREBASE_STORAGE_BUCKET || "",
+  messagingSenderId: safeMetaEnv.VITE_FIREBASE_MESSAGING_SENDER_ID || safeMetaEnv.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || safeProcessEnv.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || safeProcessEnv.VITE_FIREBASE_MESSAGING_SENDER_ID || "",
+  appId: safeMetaEnv.VITE_FIREBASE_APP_ID || safeMetaEnv.NEXT_PUBLIC_FIREBASE_APP_ID || safeProcessEnv.NEXT_PUBLIC_FIREBASE_APP_ID || safeProcessEnv.VITE_FIREBASE_APP_ID || "",
 };
 
 // Startup Validation
@@ -51,7 +51,9 @@ const finalConfig = firebaseEnvError ? {
 
 const app = initializeApp(finalConfig);
 
-export const db = getFirestore(app);
+export const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+});
 export const firebaseMetadata = {
   projectId: finalConfig.projectId || "organic-gamma-m6m9v",
   databaseName: "(default)"

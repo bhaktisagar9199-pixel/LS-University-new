@@ -261,7 +261,7 @@ export default function SectionRenderer({ sections, courses, notices, onNavigate
                         <h2 className="text-3xl sm:text-4xl font-serif font-extrabold tracking-tight text-white">{title}</h2>
                       </div>
                       <p className="text-gray-300 text-sm leading-relaxed max-w-2xl">
-                        {content?.desc || "LS University delivers high fidelity educational layouts structured to bypass traditional limits."}
+                        {content?.desc || "LS University new delivers high fidelity educational layouts structured to bypass traditional limits."}
                       </p>
                       {content?.buttonText && (
                         <motion.button

@@ -2,7 +2,7 @@ import { SiteConfig, PageData, Course, Certificate, Notice, MediaItem } from "./
 
 export const DEFAULT_SITE_CONFIG: SiteConfig = {
   universityName: "Laxmi Shanker University",
-  logoText: "LS UNIVERSITY",
+  logoText: "LS UNIVERSITY NEW",
   logoUrl: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=160&auto=format&fit=crop&q=80",
   accreditationBadge: "QS 5-Star Rated | Govt Approved UGC Section 2(f) | NAAC A++ Grade",
   contactEmail: "admissions@lsuniversity.edu.in",
@@ -10,7 +10,7 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   address: "LS Knowledge Boulevard, Sector 62, Noida, NCR 201301, India",
   goldAccentColor: "#D4AF37", // Premium Gold
   primaryThemeColor: "#0A192F", // Midnight Blue/Navy
-  seoTitle: "LS University | Lead the Technological Paradigm Shift",
+  seoTitle: "LS University new | Lead the Technological Paradigm Shift",
   seoDescription: "An elite Indian institution committed to architectural engineering, advanced computing, global management, and path-breaking research.",
   socialLinks: {
     facebook: "https://facebook.com/lsuniversity",
@@ -79,7 +79,7 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
       ]
     }
   ],
-  announcementTicker: "🚨 Admissions open for Academic Session 2026-27! Register for LS-SAT entrance before June 28th. NAAC declares LS University with CGPA of 3.82/4 (A++)."
+  announcementTicker: "🚨 Admissions open for Academic Session 2026-27! Register for LS-SAT entrance before June 28th. NAAC declares LS University new with CGPA of 3.82/4 (A++)."
 };
 
 export const DEFAULT_PAGES: PageData[] = [
@@ -88,7 +88,7 @@ export const DEFAULT_PAGES: PageData[] = [
     title: "Home",
     slug: "",
     seoTitle: "Laxmi Shanker University | Elite Tech Campus",
-    seoDesc: "Discover excellence in computer science, business design, and engineering sciences at LS University. ₹50 Crore Smart Tech Campus NCR.",
+    seoDesc: "Discover excellence in computer science, business design, and engineering sciences at LS University new. ₹50 Crore Smart Tech Campus NCR.",
     published: true,
     createdAt: "2026-06-14T00:00:00.000Z",
     updatedAt: "2026-06-14T00:00:00.000Z",
@@ -126,7 +126,7 @@ export const DEFAULT_PAGES: PageData[] = [
         type: "infosection",
         title: "Pioneering the Intellectual Paradigm",
         content: {
-          desc: "LS University stands as a sanctuary of multidisciplinary research and top-tier industrial alignment. In synergy with top-tier international institutions, our curricula leverage real-world case practices, machine learning labs, and extensive product development workshops. Here, you transition from consumer to architect of global ecosystems.",
+          desc: "LS University new stands as a sanctuary of multidisciplinary research and top-tier industrial alignment. In synergy with top-tier international institutions, our curricula leverage real-world case practices, machine learning labs, and extensive product development workshops. Here, you transition from consumer to architect of global ecosystems.",
           imageUrl: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=80",
           layout: "text-left",
           buttonText: "Our Scientific Core",
@@ -172,7 +172,7 @@ export const DEFAULT_PAGES: PageData[] = [
               name: "Sanya Mahajan",
               designation: "Software Architect, Microsoft Seattle (B.Tech CSE '24)",
               rating: 5,
-              text: "The sheer speed of tech evolution requires an agile curriculum. LS University's focus on deep-learning models, cloud structures, and direct internships equipped me perfectly.",
+              text: "The sheer speed of tech evolution requires an agile curriculum. LS University new's focus on deep-learning models, cloud structures, and direct internships equipped me perfectly.",
               image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80"
             },
             {
@@ -191,7 +191,7 @@ export const DEFAULT_PAGES: PageData[] = [
     id: "about",
     title: "About Us",
     slug: "about",
-    seoTitle: "Legacy & Accreditation | LS University",
+    seoTitle: "Legacy & Accreditation | LS University new",
     seoDesc: "Learn about the visionary curriculum, NAAC accreditation, and standard facilities at Laxmi Shanker University.",
     published: true,
     createdAt: "2026-06-14T00:00:00.000Z",
@@ -203,7 +203,7 @@ export const DEFAULT_PAGES: PageData[] = [
         title: "The LS Scientific Creed",
         subtitle: "ACADEMIC FREEDOM, COLLABORATIVE INNOVATION, SOCIAL RESPONSIBILITY",
         content: {
-          tagline: "LS University is structured around autonomous research clusters designed to eliminate bureaucratic hurdles and foster path-breaking science.",
+          tagline: "LS University new is structured around autonomous research clusters designed to eliminate bureaucratic hurdles and foster path-breaking science.",
           bgImage: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1600&auto=format&fit=crop&q=80",
           ctaText1: "Our Programs",
           ctaLink1: "/courses"
@@ -228,7 +228,7 @@ export const DEFAULT_PAGES: PageData[] = [
     title: "Placements",
     slug: "placements",
     seoTitle: "Elite Student Recruitments | LS Placements",
-    seoDesc: "Discover the companies hiring at LS University — Amazon, Google, Deloitte, NVidia research. Unravel placement tracks.",
+    seoDesc: "Discover the companies hiring at LS University new — Amazon, Google, Deloitte, NVidia research. Unravel placement tracks.",
     published: true,
     createdAt: "2026-06-14T00:00:00.000Z",
     updatedAt: "2026-06-14T00:00:00.000Z",
@@ -269,7 +269,7 @@ export const DEFAULT_PAGES: PageData[] = [
     id: "contact",
     title: "Contact",
     slug: "contact",
-    seoTitle: "Connect with Admissions | LS University",
+    seoTitle: "Connect with Admissions | LS University new",
     seoDesc: "Looking to schedule a tech campus tour or have questions about eligibility? Speak with our dean or admissions team today.",
     published: true,
     createdAt: "2026-06-14T00:00:00.000Z",
@@ -363,7 +363,7 @@ export const DEMO_CERTIFICATES: Certificate[] = [
     issueDate: "July 12, 2025",
     grade: "9.62 CGPA (First Class with Distinction)",
     status: "Verified",
-    qrCodeValue: "LSU-9283-1029|LS2022CSE402|Aditya Vardhan Dixit|B.Tech CSE|Verified|LS University Accreditation Portal",
+    qrCodeValue: "LSU-9283-1029|LS2022CSE402|Aditya Vardhan Dixit|B.Tech CSE|Verified|LS University new Accreditation Portal",
     remarks: "Ranked 3rd in the CSE batch. Recipient of Dean's Scientific Roll"
   },
   {
@@ -396,7 +396,7 @@ export const DEMO_NOTICES: Notice[] = [
     category: "Examinations",
     date: "2026-06-08",
     priority: "Normal",
-    description: "The National Assessment and Accreditation Council (NAAC) peer team has officially awarded LS University the highest grade: A++ with a CGPA score of 3.82. The detailed quality assessment dossier is attached in Downloads.",
+    description: "The National Assessment and Accreditation Council (NAAC) peer team has officially awarded LS University new the highest grade: A++ with a CGPA score of 3.82. The detailed quality assessment dossier is attached in Downloads.",
     published: true
   },
   {
