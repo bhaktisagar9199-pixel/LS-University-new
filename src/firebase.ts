@@ -7,6 +7,8 @@ import { getStorage } from "firebase/storage";
 const safeProcessEnv = typeof process !== "undefined" && process.env ? process.env : {} as Record<string, string>;
 const safeMetaEnv = (import.meta as any).env || {};
 
+export const isDevMode = safeMetaEnv.DEV === true || safeProcessEnv.NODE_ENV === "development" || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"));
+
 // Use environment variables only. Prioritize VITE_ keys, fallback to NEXT_PUBLIC_ keys
 const firebaseConfig = {
   apiKey: safeMetaEnv.VITE_FIREBASE_API_KEY || safeMetaEnv.NEXT_PUBLIC_FIREBASE_API_KEY || safeProcessEnv.NEXT_PUBLIC_FIREBASE_API_KEY || safeProcessEnv.VITE_FIREBASE_API_KEY || "",
