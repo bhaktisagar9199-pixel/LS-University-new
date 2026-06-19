@@ -5,11 +5,17 @@ import {
   Mail, Phone, MapPin, Send, CheckCircle2, Bookmark, FileText,
   Image, Play, ChevronLeft, ChevronRight as ChevronRightIcon, X
 } from "lucide-react";
-import { PageSection, Course, Notice, GalleryAlbum } from "../types";
-import { DEMO_PLACEMENTS } from "../demoData";
+import { PageSection, Course, Notice, GalleryAlbum, SiteConfig } from "../types";
 import { motion, AnimatePresence } from "motion/react";
 import { db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
+
+const DEMO_PLACEMENTS = [
+  { studentName: "Siddharth Goel", companyName: "Google India", package: "₹48.4 LPA", course: "B.Tech CSE, 2024", image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=120&auto=format&fit=crop&q=80" },
+  { studentName: "Avni Kapoor", companyName: "Amazon Web Services", package: "₹34.5 LPA", course: "B.Tech IT, 2025", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80" },
+  { studentName: "Ritvik Sharma", companyName: "NVIDIA Corp Research", package: "₹42.0 LPA", course: "M.Tech AI, 2024", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=120&auto=format&fit=crop&q=80" },
+  { studentName: "Simran Johar", companyName: "Deloitte Core strategy", package: "₹18.0 LPA", course: "MBA Digital Business, 2025", image: "https://images.unsplash.com/photo-1594744803329-e58b31de215f?w=120&auto=format&fit=crop&q=80" }
+];
 
 interface SectionRendererProps {
   sections: PageSection[];
@@ -17,9 +23,17 @@ interface SectionRendererProps {
   notices: Notice[];
   onNavigate: (slug: string) => void;
   galleryAlbums?: GalleryAlbum[];
+  config?: SiteConfig;
 }
 
-export default function SectionRenderer({ sections, courses, notices, onNavigate, galleryAlbums }: SectionRendererProps) {
+export default function SectionRenderer({ 
+  sections, 
+  courses, 
+  notices, 
+  onNavigate, 
+  galleryAlbums,
+  config
+}: SectionRendererProps) {
   
   // Selected course details modal state
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
@@ -131,7 +145,7 @@ export default function SectionRenderer({ sections, courses, notices, onNavigate
                       className="text-4xl sm:text-6xl lg:text-8xl font-serif font-extrabold tracking-tight text-white leading-none"
                     >
                       <span className="block text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-[#F4E6C1]">
-                        {title || "Lakshmi Sehgal University"}
+                        {(title === "Lakshmi Sehgal University" || title === "LS University new" || !title) ? (config?.universityName || "Lakshmi Sehgal University") : title}
                       </span>
                     </motion.h1>
                     
@@ -332,7 +346,7 @@ export default function SectionRenderer({ sections, courses, notices, onNavigate
                       </div>
                       
                       <p className="text-slate-300 text-sm leading-relaxed max-w-2xl font-light">
-                        {content?.desc || "LS University new delivers high fidelity educational layouts structured to bypass traditional limits."}
+                        {content?.desc || (config?.universityName ? `Welcome to ${config.universityName}. Discover our advanced academic curriculum and stellar career tracks.` : "Delivering high fidelity educational layouts structured to bypass traditional limits.")}
                       </p>
                       
                       {content?.buttonText && (
@@ -803,13 +817,13 @@ export default function SectionRenderer({ sections, courses, notices, onNavigate
                           <div className="p-2.5 bg-purple-950/30 border border-purple-500/20 rounded-lg shadow">
                             <Phone className="w-4 h-4 text-[#D4AF37]" />
                           </div>
-                          <span className="text-purple-200">+91-11-4920-3022 | Executive Admissions Hotline</span>
+                          <span className="text-purple-200">{config?.contactPhone || "+91-11-4920-3022"} | Executive Admissions Hotline</span>
                         </div>
                         <div className="flex items-center gap-3.5">
                           <div className="p-2.5 bg-purple-950/30 border border-purple-500/20 rounded-lg shadow">
                             <Mail className="w-4 h-4 text-[#D4AF37]" />
                           </div>
-                          <span className="text-purple-200">admissions@lsuniversity.edu.in</span>
+                          <span className="text-purple-200">{config?.contactEmail || "admissions@lsu.edu.in"}</span>
                         </div>
                       </div>
                     </div>
@@ -916,6 +930,7 @@ export default function SectionRenderer({ sections, courses, notices, onNavigate
                 title={title}
                 subtitle={subtitle}
                 galleryAlbums={galleryAlbums || []}
+                config={config}
               />
             );
 
@@ -936,9 +951,10 @@ interface GallerySectionBlockProps {
   title?: string;
   subtitle?: string;
   galleryAlbums: GalleryAlbum[];
+  config?: SiteConfig;
 }
 
-function GallerySectionBlock({ title, subtitle, galleryAlbums }: GallerySectionBlockProps) {
+function GallerySectionBlock({ title, subtitle, galleryAlbums, config }: GallerySectionBlockProps) {
   const [activeCategory, setActiveCategory] = useState<"ALL" | "Campus" | "Events" | "Convocation" | "Sports" | "Cultural">("ALL");
   const [activeAlbum, setActiveAlbum] = useState<GalleryAlbum | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -986,10 +1002,10 @@ function GallerySectionBlock({ title, subtitle, galleryAlbums }: GallerySectionB
             <Image className="w-3.5 h-3.5" /> LUXURY PICTURES & ARCHIVES
           </div>
           <h2 className="text-3xl md:text-5xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-[#EAE0D5] to-[#D4AF37] tracking-tight">
-            {title || "LSU Royal Archives & Gallery"}
+            {title || (config?.universityName ? `${config.logoText || config.universityName.toUpperCase()} Royal Archives` : "Royal Archives & Gallery")}
           </h2>
           <p className="text-sm md:text-base text-gray-300 leading-relaxed font-sans">
-            {subtitle || "Exploring the palatial research structures, academic festivities, state councils, and athletic triumphs of Lakshmi Sehgal University."}
+            {subtitle || `Exploring the palatial research structures, academic festivities, state councils, and athletic triumphs of ${config?.universityName || "the university"}.`}
           </p>
         </div>
 

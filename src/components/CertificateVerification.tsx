@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Search, CheckCircle2, AlertTriangle, Printer, QrCode, ShieldCheck, Award } from "lucide-react";
-import { Certificate } from "../types";
+import { Certificate, SiteConfig } from "../types";
 
 interface CertificateVerificationProps {
   certificates: Certificate[];
+  config?: SiteConfig;
 }
 
-export default function CertificateVerification({ certificates }: CertificateVerificationProps) {
+export default function CertificateVerification({ certificates, config }: CertificateVerificationProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [verifiedCert, setVerifiedCert] = useState<Certificate | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
@@ -58,7 +59,7 @@ export default function CertificateVerification({ certificates }: CertificateVer
             Credential Verification Portal
           </h1>
           <p className="text-gray-300 text-sm md:text-base leading-relaxed">
-            Verify academic transcripts, degree certificates, and doctoral credentials issued by Lakshmi Sehgal University. Confirmed via live blockchain-secured database registry.
+            Verify academic transcripts, degree certificates, and doctoral credentials issued by {config?.universityName || "Lakshmi Sehgal University"}. Confirmed via live blockchain-secured database registry.
           </p>
         </div>
       </div>
@@ -149,11 +150,11 @@ export default function CertificateVerification({ certificates }: CertificateVer
                       {/* University Header logo */}
                       <div className="flex flex-col items-center space-y-2">
                         <Award className="w-12 h-12 text-[#D4AF37]" />
-                        <h2 className="text-2xl font-serif font-bold tracking-widest text-[#58111A]">
-                          LAKSHMI SEHGAL UNIVERSITY
+                        <h2 className="text-2xl font-serif font-bold tracking-widest text-[#58111A] uppercase">
+                          {config?.logoText || config?.universityName || "LAKSHMI SEHGAL UNIVERSITY"}
                         </h2>
-                        <span className="text-[10px] font-mono tracking-[4px] text-gray-500 uppercase">
-                          Noida, Delhi NCR, India
+                        <span className="text-[10px] font-mono tracking-[2px] text-gray-500 uppercase block max-w-sm mx-auto">
+                          {config?.address || "Noida, Delhi NCR, India"}
                         </span>
                       </div>
 

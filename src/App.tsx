@@ -3,8 +3,8 @@ import { onSnapshot, collection, doc, setDoc } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType, firebaseMetadata, firebaseEnvError, isDevMode } from "./firebase";
 import { SiteConfig, PageData, Course, Certificate, Notice, GalleryAlbum } from "./types";
 import { 
-  DEFAULT_SITE_CONFIG, DEFAULT_PAGES, DEMO_COURSES, DEMO_CERTIFICATES, DEMO_NOTICES, DEMO_GALLERY_ALBUMS 
-} from "./demoData";
+  INITIAL_SITE_CONFIG, INITIAL_PAGES, INITIAL_COURSES, INITIAL_CERTIFICATES, INITIAL_NOTICES, INITIAL_GALLERY_ALBUMS 
+} from "./initialContent";
 import { motion, AnimatePresence } from "motion/react";
 
 // Components
@@ -17,12 +17,12 @@ import AdminDashboard from "./components/AdminDashboard";
 export default function App() {
   
   // Realtime Database Synchronized States
-  const [siteConfig, setSiteConfig] = useState<SiteConfig>(DEFAULT_SITE_CONFIG);
-  const [pages, setPages] = useState<PageData[]>(DEFAULT_PAGES);
-  const [courses, setCourses] = useState<Course[]>(DEMO_COURSES);
-  const [certificates, setCertificates] = useState<Certificate[]>(DEMO_CERTIFICATES);
-  const [notices, setNotices] = useState<Notice[]>(DEMO_NOTICES);
-  const [galleryAlbums, setGalleryAlbums] = useState<GalleryAlbum[]>(DEMO_GALLERY_ALBUMS);
+  const [siteConfig, setSiteConfig] = useState<SiteConfig>(INITIAL_SITE_CONFIG);
+  const [pages, setPages] = useState<PageData[]>(INITIAL_PAGES);
+  const [courses, setCourses] = useState<Course[]>(INITIAL_COURSES);
+  const [certificates, setCertificates] = useState<Certificate[]>(INITIAL_CERTIFICATES);
+  const [notices, setNotices] = useState<Notice[]>(INITIAL_NOTICES);
+  const [galleryAlbums, setGalleryAlbums] = useState<GalleryAlbum[]>(INITIAL_GALLERY_ALBUMS);
 
   // Connection & Loading indicators
   const [isDbLoaded, setIsDbLoaded] = useState(false);
@@ -55,9 +55,9 @@ export default function App() {
     const unsubConfig = onSnapshot(doc(db, "site_config", "main_settings"), (snap) => {
       if (snap.exists()) {
         setSiteConfig(snap.data() as SiteConfig);
-      } else {
-        // Automatically seed empty Firestore
-        setDoc(doc(db, "site_config", "main_settings"), DEFAULT_SITE_CONFIG).catch((err) => console.warn(err));
+      } else if (isDevMode) {
+        // Automatically seed empty Firestore only in local development
+        setDoc(doc(db, "site_config", "main_settings"), INITIAL_SITE_CONFIG).catch((err) => console.warn(err));
       }
     }, (err) => {
       console.warn("Using offline brand config template.", err);
@@ -73,9 +73,9 @@ export default function App() {
         // Sort home first if available, otherwise chronologically
         list.sort((a, b) => (a.slug === "" ? -1 : b.slug === "" ? 1 : 0));
         setPages(list);
-      } else {
-        // Automatically seed empty Firestore
-        DEFAULT_PAGES.forEach((pg) => {
+      } else if (isDevMode) {
+        // Automatically seed empty Firestore only in local development
+        INITIAL_PAGES.forEach((pg) => {
           setDoc(doc(db, "pages", pg.id), pg).catch((err) => console.warn(err));
         });
       }
@@ -91,9 +91,9 @@ export default function App() {
           list.push({ id: docSnap.id, ...docSnap.data() } as Course);
         });
         setCourses(list);
-      } else {
-        // Automatically seed empty Firestore
-        DEMO_COURSES.forEach((crs) => {
+      } else if (isDevMode) {
+        // Automatically seed empty Firestore only in local development
+        INITIAL_COURSES.forEach((crs) => {
           setDoc(doc(db, "courses", crs.id), crs).catch((err) => console.warn(err));
         });
       }
@@ -109,9 +109,9 @@ export default function App() {
           list.push({ id: docSnap.id, ...docSnap.data() } as Certificate);
         });
         setCertificates(list);
-      } else {
-        // Automatically seed empty Firestore
-        DEMO_CERTIFICATES.forEach((cert) => {
+      } else if (isDevMode) {
+        // Automatically seed empty Firestore only in local development
+        INITIAL_CERTIFICATES.forEach((cert) => {
           setDoc(doc(db, "certificates", cert.id), cert).catch((err) => console.warn(err));
         });
       }
@@ -129,9 +129,9 @@ export default function App() {
         // Sort newest published date first
         list.sort((a, b) => b.date.localeCompare(a.date));
         setNotices(list);
-      } else {
-        // Automatically seed empty Firestore
-        DEMO_NOTICES.forEach((n) => {
+      } else if (isDevMode) {
+        // Automatically seed empty Firestore only in local development
+        INITIAL_NOTICES.forEach((n) => {
           setDoc(doc(db, "notices", n.id), n).catch((err) => console.warn(err));
         });
       }
@@ -148,9 +148,9 @@ export default function App() {
         });
         list.sort((a, b) => a.order - b.order);
         setGalleryAlbums(list);
-      } else {
-        // Automatically seed empty Firestore
-        DEMO_GALLERY_ALBUMS.forEach((album) => {
+      } else if (isDevMode) {
+        // Automatically seed empty Firestore only in local development
+        INITIAL_GALLERY_ALBUMS.forEach((album) => {
           setDoc(doc(db, "gallery_albums", album.id), album).catch((err) => console.warn(err));
         });
       }
@@ -182,6 +182,7 @@ export default function App() {
       return (
         <CertificateVerification 
           certificates={certificates} 
+          config={siteConfig}
         />
       );
     }
@@ -193,14 +194,15 @@ export default function App() {
           sections={[{
             id: "gallery-page-container",
             type: "gallery",
-            title: "LSU Royal Archives & Gallery",
-            subtitle: "EXPLORING THE PALATIAL ESTATES OF LAKSHMI SEHGAL ACADEMIA",
+            title: `${siteConfig.logoText || "LSU"} Royal Archives & Gallery`,
+            subtitle: `EXPLORING THE PALATIAL ESTATES OF ${(siteConfig.universityName || "LAKSHMI SEHGAL UNIVERSITY").toUpperCase()}`,
             content: {}
           }]}
           courses={courses}
           notices={notices}
           onNavigate={navigateTo}
           galleryAlbums={galleryAlbums}
+          config={siteConfig}
         />
       );
     }
@@ -234,12 +236,13 @@ export default function App() {
           notices={notices}
           onNavigate={navigateTo}
           galleryAlbums={galleryAlbums}
+          config={siteConfig}
         />
       );
     }
 
     // E. 404/Missing route fallback: render dynamic homepage
-    const homePage = pages.find(p => p.slug === "") || DEFAULT_PAGES[0];
+    const homePage = pages.find(p => p.slug === "") || INITIAL_PAGES[0];
     return (
       <SectionRenderer 
         sections={homePage.sections}
@@ -247,6 +250,7 @@ export default function App() {
         notices={notices}
         onNavigate={navigateTo}
         galleryAlbums={galleryAlbums}
+        config={siteConfig}
       />
     );
   };
@@ -340,4 +344,3 @@ export default function App() {
     </div>
   );
 }
-export { DEFAULT_SITE_CONFIG, DEFAULT_PAGES };

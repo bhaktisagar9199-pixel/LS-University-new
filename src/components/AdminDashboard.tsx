@@ -17,8 +17,8 @@ import {
   SiteConfig, PageData, Course, Certificate, MediaItem, PageSection, Notice, GalleryAlbum, GalleryMediaItem 
 } from "../types";
 import { 
-  DEFAULT_SITE_CONFIG, DEFAULT_PAGES, DEMO_COURSES, DEMO_CERTIFICATES, DEMO_NOTICES, DEMO_MEDIA_ITEMS, DEMO_PLACEMENTS 
-} from "../demoData";
+  INITIAL_SITE_CONFIG, INITIAL_PAGES, INITIAL_COURSES, INITIAL_CERTIFICATES, INITIAL_NOTICES, INITIAL_MEDIA_ITEMS 
+} from "../initialContent";
 
 interface AdminDashboardProps {
   onSiteConfigUpdate: (config: SiteConfig) => void;
@@ -119,10 +119,14 @@ export default function AdminDashboard({
         list.push({ id: docSnap.id, ...docSnap.data() } as MediaItem);
       });
       if (snap.empty) {
-        DEMO_MEDIA_ITEMS.forEach((mi) => {
-          setDoc(doc(db, "media_items", mi.id), mi).catch((e) => console.warn(e));
-        });
-        setMediaItems(DEMO_MEDIA_ITEMS);
+        if (isDevMode) {
+          INITIAL_MEDIA_ITEMS.forEach((mi) => {
+            setDoc(doc(db, "media_items", mi.id), mi).catch((e) => console.warn(e));
+          });
+          setMediaItems(INITIAL_MEDIA_ITEMS);
+        } else {
+          setMediaItems([]);
+        }
       } else {
         setMediaItems(list);
       }
@@ -198,7 +202,7 @@ export default function AdminDashboard({
       notices,
       galleryAlbums,
       exportedAt: new Date().toISOString(),
-      branding: "Lakshmi Sehgal University Safety Registry"
+      branding: `${siteConfig?.universityName || "Lakshmi Sehgal University"} Safety Registry`
     };
     const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -293,8 +297,8 @@ export default function AdminDashboard({
       id: cleanId,
       title: newPageTitle,
       slug: slugPlain,
-      seoTitle: `${newPageTitle} | LS University new`,
-      seoDesc: `LS University new dynamic information page for ${newPageTitle}`,
+      seoTitle: `${newPageTitle} | ${siteConfig?.universityName || "Lakshmi Sehgal University"}`,
+      seoDesc: `${siteConfig?.universityName || "Lakshmi Sehgal University"} dynamic information page for ${newPageTitle}`,
       published: true,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -546,7 +550,7 @@ export default function AdminDashboard({
       issueDate: newCert.issueDate || new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' }),
       grade: newCert.grade || "9.0 CGPA",
       status: (newCert.status as any) || "Verified",
-      qrCodeValue: `${newCert.certificateNo}|${newCert.enrollmentNo}|${newCert.studentName}|Verified|LS University new Security Registry`,
+      qrCodeValue: `${newCert.certificateNo}|${newCert.enrollmentNo}|${newCert.studentName}|Verified|${siteConfig?.universityName || "Lakshmi Sehgal University"} Security Registry`,
       remarks: newCert.remarks || ""
     };
 
@@ -663,7 +667,7 @@ export default function AdminDashboard({
               CMS ADMINISTRATIVE ACCESS
             </h2>
             <p className="text-xs text-gray-400 font-mono">
-              LS University new Portal Centralized CMS Gateway
+              {siteConfig?.universityName || "Lakshmi Sehgal University"} Portal Centralized CMS Gateway
             </p>
           </div>
 
@@ -863,7 +867,7 @@ export default function AdminDashboard({
                 <h1 className="text-3xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-white block to-[#D4AF37]">
                   ADMINISTRATION SUMMARY
                 </h1>
-                <p className="text-xs text-gray-400 font-mono mt-1">Real-time status metrics of LS University new dynamic database nodes.</p>
+                <p className="text-xs text-gray-400 font-mono mt-1">Real-time status metrics of {siteConfig?.universityName || "Lakshmi Sehgal University"} dynamic database nodes.</p>
               </div>
               <div className="text-xs font-mono bg-slate-900 border border-[#D4AF37]/20 rounded px-3 py-1.5 flex items-center gap-1.5 text-gray-300">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
@@ -921,7 +925,7 @@ export default function AdminDashboard({
                 Zero-Code Staging Integration
               </h2>
               <p className="text-sm text-gray-300 leading-relaxed">
-                LS University new's layout renders 100% of its content dynamically. When you alter any text, card, list, fee, or notice inside these CMS tab selectors, the live system propagates changes to all connected visitors instantly using Firestore streaming web-hooks. 
+                The university portal layout renders 100% of its content dynamically. When you alter any text, card, list, fee, or notice inside these CMS tab selectors, the live system propagates changes to all connected visitors instantly using Firestore streaming web-hooks. 
               </p>
               <div className="pt-2 flex flex-wrap gap-3">
                 <button
@@ -3226,6 +3230,3 @@ function AdmissionManagerPanel({ admissions, triggerNotify }: AdmissionManagerPa
     </div>
   );
 }
-
-export { DEFAULT_SITE_CONFIG, DEFAULT_PAGES };
-export { DEMO_COURSES, DEMO_CERTIFICATES, DEMO_NOTICES, DEMO_MEDIA_ITEMS, DEMO_PLACEMENTS };

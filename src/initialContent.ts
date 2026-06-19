@@ -1,6 +1,6 @@
 import { SiteConfig, PageData, Course, Certificate, Notice, MediaItem, GalleryAlbum } from "./types";
 
-export const DEFAULT_SITE_CONFIG: SiteConfig = {
+export const INITIAL_SITE_CONFIG: SiteConfig = {
   universityName: "Lakshmi Sehgal University",
   logoText: "LAKSHMI SEHGAL UNIVERSITY",
   logoUrl: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=160&auto=format&fit=crop&q=80",
@@ -76,10 +76,10 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
       ]
     }
   ],
-  announcementTicker: "🚨 Admissions Open (Academic Session 2026-27)! Admissions secured via LSU-SAT entrance. Last date to register is June 28th. NAAC Accreditations officially award LSU highest A++ grade!"
+  announcementTicker: "Admissions Open (Academic Session 2026-27). Admissions secured via LSU-SAT entrance. Last date to register is June 28th. NAAC Accreditations officially award LSU highest A++ grade!"
 };
 
-export const DEFAULT_PAGES: PageData[] = [
+export const INITIAL_PAGES: PageData[] = [
   {
     id: "home",
     title: "Home",
@@ -211,7 +211,7 @@ export const DEFAULT_PAGES: PageData[] = [
         type: "infosection",
         title: "Desk of the Chancellor: Dr. Arvind Sehgal",
         content: {
-          desc: "Our mission is to establish a ₹200-Crore academic tech sanctuary right in the heart of NCR, nurturing talent that drives the nation's scientific evolution. By investing in carbon-neutral campuses, modern clean-energy labs, and direct cloud collaborations, we guarantee our graduates lead corporate spheres immediately upon graduation. Lakshmi Sehgal University stands as a monument to scientific persistence.",
+          desc: "Our mission is to establish an elite academic tech sanctuary, nurturing talent that drives the nation's scientific evolution. By investing in carbon-neutral campuses, modern clean-energy labs, and direct cloud collaborations, we guarantee our graduates lead corporate spheres immediately upon graduation. Lakshmi Sehgal University stands as a monument to scientific persistence.",
           imageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&auto=format&fit=crop&q=80",
           layout: "text-right",
           buttonText: "Register Consultation Profile",
@@ -305,213 +305,92 @@ export const DEFAULT_PAGES: PageData[] = [
   }
 ];
 
-export const DEMO_COURSES: Course[] = [
+export const INITIAL_COURSES: Course[] = [
   {
     id: "course-btech-cse",
-    name: "B.Tech in Computer Science & Engineering",
+    name: "B.Tech Computer Science & Engineering",
     code: "BTECH-CSE",
     level: "UG",
-    duration: "4 Years (8 Semesters)",
-    eligibility: "12th standard (PCM board aggregate: min 60% score) + LSU-SAT Rank",
-    fees: "₹2,60,000 per annum",
-    description: "An elite engineering program specializing in machine systems, automated compilers, blockchain scaling, cloud nodes, and multi-modal neural network configurations.",
-    branches: ["Artificial Intelligence & ML", "Cybersecurity & Cryptography", "Data Science & Warehousing", "Core Systems Architecture"]
+    duration: "4 Years",
+    eligibility: "Aggregate 60% in Physics, Chemistry & Math in Class 12, plus qualifying index in LSU-SAT / JEE Main score.",
+    fees: "₹2,80,000 per Academic Annum",
+    description: "An intensive software development, core mathematical analytics, and algorithms-based system curricula mapping to modern enterprise requirements. Leverages state cloud clusters.",
+    branches: ["Artificial Intelligence & Deep Models", "Full-Stack Software Architecture", "Cyber Security & Forensic Auditing"]
   },
   {
-    id: "course-btech-ece",
-    name: "B.Tech in Electronics & Communication Engineering",
-    code: "BTECH-ECE",
-    level: "UG",
-    duration: "4 Years (8 Semesters)",
-    eligibility: "12th standard (PCM board aggregate: min 60% score) + JEE or LSU-SAT Rank",
-    fees: "₹1,95,000 per annum",
-    description: "Deep dive into microprocessors, IoT network nodes, next-gen 6G signal algorithms, and quantum semiconductor hardware setups.",
-    branches: ["Micro-embedded Robotics", "VLSI Research", "Optical Node Comms"]
-  },
-  {
-    id: "course-btech-me",
-    name: "B.Tech in Mechanical & Automation Engineering",
-    code: "BTECH-ME",
-    level: "UG",
-    duration: "4 Years (8 Semesters)",
-    eligibility: "12th standard (PCM boards) with minimum 55% score",
-    fees: "₹1,65,000 per annum",
-    description: "Covers automated machinery design, clean thermodynamic loops, electric drivelines, and AI production analytics.",
-    branches: ["Advanced Drone Robotics", "Green Energy Powertrains", "Fluid Dynamics CAD"]
-  },
-  {
-    id: "course-bca",
-    name: "Bachelor of Computer Applications (BCA)",
-    code: "BCA-AP",
-    level: "UG",
-    duration: "3 Years (6 Semesters)",
-    eligibility: "12th standard in any stream (Commerce, Science, Humanities) with Mathematics/Computer Science",
-    fees: "₹1,30,000 per annum",
-    description: "Practical development methodologies prioritizing modern web applications, relational databases, cloud configurations, and mobile tool chains.",
-    branches: ["Full Stack Engineering", "Mobile App Development", "UI/UX Engineering"]
-  },
-  {
-    id: "course-mca",
-    name: "Master of Computer Applications (MCA)",
-    code: "MCA-PM",
-    level: "PG",
-    duration: "2 Years (4 Semesters)",
-    eligibility: "BCA or B.Sc in Computer Science with minimum 50% score",
-    fees: "₹1,45,000 per annum",
-    description: "Advanced computational structures specializing in distributed servers, cybersecurity protocols, DevOps automations, and scalable SaaS models.",
-    branches: ["Cloud Systems & Architecting", "Intelligent Systems Integration"]
-  },
-  {
-    id: "course-bba",
-    name: "Bachelor of Business Administration (BBA)",
-    code: "BBA-DM",
-    level: "UG",
-    duration: "3 Years (6 Semesters)",
-    eligibility: "12th standard in any stream (minimum 50% score)",
-    fees: "₹1,55,000 per annum",
-    description: "Modern startup and corporate incubation strategies covering digital branding, financial markets, CRM, and venture workflows.",
-    branches: ["Venture Scale & Operations", "Marketing Analytics", "Global HR Commerce"]
-  },
-  {
-    id: "course-mba",
-    name: "Master of Business Administration (MBA - Digital Business)",
+    id: "course-mba-digital",
+    name: "MBA Digital Business & Strategy",
     code: "MBA-DB",
     level: "PG",
-    duration: "2 Years (4 Semesters)",
-    eligibility: "Graduation degree with min 50% score + qualifying CAT / MAT / GMAT score + LSU-SAT interview",
-    fees: "₹3,40,000 per annum",
-    description: "LSU Business School's flagship MBA track exploring product management pipelines, SaaS venture finances, capital fundraising, and corporate governance systems.",
-    branches: ["Tech Ventures & SaaS Metrics", "Strategic Capital & Investment Management", "AI Decision Analytics"]
+    duration: "2 Years",
+    eligibility: "Bachelor's Degree in any discipline with minimum 55% score, plus CAT / MAT / LSU-GMAT entrance evaluation.",
+    fees: "₹3,40,000 per Academic Annum",
+    description: "Built for futuristic directors and strategic entrepreneurs. Covers decentralized fintech operations, high-performance platform corporate structures, and algorithmic advertising models.",
+    branches: ["FinTech & Blockchains", "Data-Driven Marketing Strategy", "Agile Product Management"]
   },
   {
-    id: "course-ba",
-    name: "BA (Hons) in Interdisciplinary Liberal Arts",
-    code: "BA-LA",
+    id: "course-bdes-uiux",
+    name: "B.Des User Experience & Interaction Archetypes",
+    code: "BDES-UIUX",
     level: "UG",
-    duration: "3 Years (6 Semesters)",
-    eligibility: "12th standard in any board (minimum 55% score)",
-    fees: "₹1,20,000 per annum",
-    description: "Broad-spectrum studies in international relations, behavioral metrics, psychology, history of science, and public administration principles.",
-    branches: ["Global Geopolitics", "Creative Writing & Journalism", "Organizational Psychology"]
-  },
-  {
-    id: "course-bcom",
-    name: "B.Com (Hons) Professional",
-    code: "BCOM-PR",
-    level: "UG",
-    duration: "3 Years (6 Semesters)",
-    eligibility: "12th standard in commerce or science streams (minimum 60% agg)",
-    fees: "₹1,40,000 per annum",
-    description: "Intensive accountancy training aligned with international corporate practices, investment systems, portfolio strategies, and digital taxation laws.",
-    branches: ["Investment Banking", "Corporate Taxation & Auditing"]
-  },
-  {
-    id: "course-bsc",
-    name: "B.Sc (Hons) in Applied Biotechnology",
-    code: "BSC-AB",
-    level: "UG",
-    duration: "3 Years (6 Semesters)",
-    eligibility: "12th standard in science (PCB board aggregate: min 55% score)",
-    fees: "₹1,25,000 per annum",
-    description: "Practical genetic sequencing, food production security, cell cultures, and biopharmaceutical chemistry pipelines.",
-    branches: ["Genomic Informatics", "Biopharmaceutics Analysis"]
-  },
-  {
-    id: "course-msc",
-    name: "M.Sc in Advanced Food & Bio-Technologies",
-    code: "MSC-BT",
-    level: "PG",
-    duration: "2 Years (4 Semesters)",
-    eligibility: "B.Sc (Hons) in biological or allied sciences (min 50% score)",
-    fees: "₹1,35,000 per annum",
-    description: "Advanced master's curriculum focusing on genetic engineering models, cell-line scaling, and vaccine engineering processes.",
-    branches: ["Computational Proteomics", "Immuno-molecular Research"]
-  },
-  {
-    id: "course-ma",
-    name: "MA in Clinical & Counseling Psychology",
-    code: "MA-CP",
-    level: "PG",
-    duration: "2 Years (4 Semesters)",
-    eligibility: "Bachelors with min 50% score (preference to Psychology graduates)",
-    fees: "₹98,000 per annum",
-    description: "Extensive study covering cognitive therapeutic models, child psychopathology, clinical assessment loops, and corporate HR counseling.",
-    branches: ["Cognitive Behavioral Therapy", "Corporate Counseling Studies"]
-  },
-  {
-    id: "course-diploma",
-    name: "Diploma in Advanced Cloud Computing & Cybersecurity",
-    code: "DIP-CCC",
-    level: "Diploma",
-    duration: "1 Year (Fast Track)",
-    eligibility: "10th or 12th standard passing with strong computational affinity",
-    fees: "₹80,000 per annum",
-    description: "Hands-on certified pathway to get corporate ready. Covers server setups, active network monitoring, cloud infrastructure scaling, and pen-testing.",
-    branches: ["AWS & Azure Cloud Operations", "Secured Linux Administration"]
-  },
-  {
-    id: "course-phd-cs",
-    name: "Ph.D. in Computer Science & Generative AI",
-    code: "PHD-CS",
-    level: "PhD",
-    duration: "3 to 5 Years",
-    eligibility: "M.Tech or equivalent research credits with publications in indexed journals",
-    fees: "₹60,000 per annum",
-    description: "Doctorate candidates join fully-funded R&D groups to engineering next-generation multi-modal scaling systems and robust algorithmic decoders.",
-    branches: ["Neural Language Architectures", "Secure Decentralized Nodes"]
+    duration: "4 Years",
+    eligibility: "Class 12 in any stream with qualifying rankings in LSU-DAT / UCEED core evaluations.",
+    fees: "₹2,60,000 per Academic Annum",
+    description: "Covers front-facing digital aesthetics, information architecture, interface principles, micro-animations, and interactive product blueprints. Taught inside state-of-the-art visual computing labs.",
+    branches: ["Interactive Product Blueprint Design", "Creative Front-End Prototyping", "Spatial Systems & AR Experiences"]
   }
 ];
 
-export const DEMO_CERTIFICATES: Certificate[] = [
+export const INITIAL_CERTIFICATES: Certificate[] = [
   {
-    id: "cert-2025-1021",
+    id: "cert-1",
     certificateNo: "LSU-9283-1029",
     enrollmentNo: "LSU2022CSE402",
     studentName: "Aditya Vardhan Dixit",
-    course: "B.Tech in Computer Science & Engineering",
-    issueDate: "July 12, 2025",
-    grade: "9.62 CGPA (First Class with Distinction)",
+    course: "B.Tech Computer Science & Engineering",
+    issueDate: "June 14, 2025",
+    grade: "9.82 CGPA",
     status: "Verified",
     qrCodeValue: "LSU-9283-1029|LSU2022CSE402|Aditya Vardhan Dixit|B.Tech CSE|Verified|Lakshmi Sehgal University Security Registry",
     remarks: "Ranked 3rd in the CSE batch. Recipient of Dean's Scientific Roll of Honour."
   },
   {
-    id: "cert-2025-5801",
+    id: "cert-2",
     certificateNo: "LSU-1129-9238",
     enrollmentNo: "LSU2023MBA045",
     studentName: "Priyanka Chandani",
-    course: "Master of Business Administration (Digital Business)",
-    issueDate: "June 28, 2025",
-    grade: "8.95 CGPA (First Class)",
+    course: "MBA Digital Business & Strategy",
+    issueDate: "June 14, 2025",
+    grade: "9.45 CGPA",
     status: "Verified",
     qrCodeValue: "LSU-1129-9238|LSU2023MBA045|Priyanka Chandani|MBA Digital Business|Verified|Lakshmi Sehgal University Security Registry",
-    remarks: "Corporate Leadership representative. Cleared the global case study league."
+    remarks: "Elected President of LSU Fintech Council. Outstanding Innovation Awardee."
   }
 ];
 
-export const DEMO_NOTICES: Notice[] = [
+export const INITIAL_NOTICES: Notice[] = [
   {
-    id: "notice-sat-2026",
-    title: "Revised Guidelines for LSU-SAT Stage 1 Online Entrance Examinations",
+    id: "n-1",
+    title: "Official Grade Card and Transcript Dispatch Schedule (Graduates of 2025)",
     category: "Academic",
-    date: "2026-06-12",
+    date: "2026-06-18",
     priority: "High",
-    description: "The official timeline for the LSU-SAT entrance test has been finalized. Registered applicants must select slots online before June 24. A mock portal simulator link has been pushed to registration accounts.",
+    description: "The registrar's desk advises the core graduates of class 2025 that credentials, validated degree certificates, and global evaluation dossiers are ready for logistics dispatch or physical collection at counter 12 of the administration wing.",
     published: true
   },
   {
-    id: "notice-accred-naac",
-    title: "Accreditation Dossier: UGC & NAAC CGPA Team Findings",
+    id: "n-2",
+    title: "LSU-SAT Entrance Registrations Extended (Academic Cycle 2026)",
+    category: "Admissions",
+    date: "2026-06-15",
+    priority: "High",
+    description: "Due to high volume index requests for engineering and design tracks, the registration hotline accepts secure application entries until June 28, 2025. Technical evaluations take place on July 5, 2025.",
+    published: true
+  },
+  {
+    id: "n-3",
+    title: "DST Research Grant Awarded to Advanced Cloud Architecture Lab",
     category: "Academic",
-    date: "2026-06-08",
-    priority: "Normal",
-    description: "The National Assessment and Accreditation Council (NAAC) has completed its peer review audit, officially grading Lakshmi Sehgal University with the highest grade: A++ (CGPA Score: 3.82/4.00). Document available for verification.",
-    published: true
-  },
-  {
-    id: "notice-ieee-grant",
-    title: "Research Grant: Dept of Science & Technology Sanctions ₹4.5 Crores",
-    category: "Events",
     date: "2026-06-05",
     priority: "Normal",
     description: "LSU Center for Advanced Computing has been awarded a premium research grant of ₹4.5 Crores by DST to explore automated carbon footprint reductions in hyper-scale cloud grids. B.Tech research slots are open.",
@@ -519,70 +398,32 @@ export const DEMO_NOTICES: Notice[] = [
   }
 ];
 
-export const DEMO_PLACEMENTS = [
-  { studentName: "Siddharth Goel", companyName: "Google India", package: "₹48.4 LPA", course: "B.Tech CSE, 2024", image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=120&auto=format&fit=crop&q=80" },
-  { studentName: "Avni Kapoor", companyName: "Amazon Web Services", package: "₹34.5 LPA", course: "B.Tech IT, 2025", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80" },
-  { studentName: "Ritvik Sharma", companyName: "NVIDIA Corp Research", package: "₹42.0 LPA", course: "M.Tech AI, 2024", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=120&auto=format&fit=crop&q=80" },
-  { studentName: "Simran Johar", companyName: "Deloitte Core strategy", package: "₹18.0 LPA", course: "MBA Digital Business, 2025", image: "https://images.unsplash.com/photo-1594744803329-e58b31de215f?w=120&auto=format&fit=crop&q=80" }
-];
-
-export const DEMO_MEDIA_ITEMS: MediaItem[] = [
+export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
   { id: "m-1", name: "Campus Grand Main Auditorium", url: "https://images.unsplash.com/photo-1562774053-701939374585?w=1200", folder: "Gallery", mimeType: "image/jpeg", size: "340 KB", createdAt: "2026-06-14" },
   { id: "m-2", name: "Central Smart Computing Labs", url: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200", folder: "Gallery", mimeType: "image/jpeg", size: "280 KB", createdAt: "2026-06-14" },
   { id: "m-3", name: "Official Admission Brochure PDF 2026", url: "/brochure_mock_2026_download.pdf", folder: "Admissions", mimeType: "application/pdf", size: "4.2 MB", createdAt: "2026-06-14" },
   { id: "m-4", name: "Official NAAC Accreditation Document", url: "/naac_accreditation_report.pdf", folder: "Certificates", mimeType: "application/pdf", size: "1.8 MB", createdAt: "2026-06-14" }
 ];
 
-export const DEMO_GALLERY_ALBUMS: GalleryAlbum[] = [
+export const INITIAL_GALLERY_ALBUMS: GalleryAlbum[] = [
   {
-    id: "album-infra",
-    title: "Campus Infrastructure & Academic Blocks",
+    id: "g-alb-1",
+    title: "Architecture & Royal Estates",
     type: "Campus",
     order: 1,
     media: [
-      { id: "g-inf-1", url: "https://images.unsplash.com/photo-1562774053-701939374585?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "The LSU Grand Academic Block Front Facade" },
-      { id: "g-inf-2", url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "Central Courtyard & Executive Library Block" },
-      { id: "g-inf-3", url: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "Advanced Quantum Computing & Embedded AI Labs" }
+      { id: "g-arch-1", url: "https://images.unsplash.com/photo-1562774053-701939374585?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "Grand administrative rotunda reflecting classic colonial lines" },
+      { id: "g-arch-2", url: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "High-performance computational infrastructure clusters" }
     ]
   },
   {
-    id: "album-fest",
-    title: "Imperial Academic Fest & Tech Conclave",
-    type: "Events",
+    id: "g-alb-2",
+    title: "Academic Festivities & Convocation",
+    type: "Convocation",
     order: 2,
     media: [
-      { id: "g-fst-1", url: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "Inaugural Session of Tech Conclave 2026" },
-      { id: "g-fst-2", url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "Over 5,000 delegates joining live in Main Arena" }
-    ]
-  },
-  {
-    id: "album-convo",
-    title: "24th Annual Convocation Ceremony",
-    type: "Convocation",
-    order: 3,
-    media: [
-      { id: "g-cnv-1", url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "B.Tech CSE graduating batch of 2025" },
-      { id: "g-cnv-2", url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "Chancellor Dr. Arvind Sehgal presenting gold academic medals" }
-    ]
-  },
-  {
-    id: "album-sports",
-    title: "Inter-University Cricket & Athletic League",
-    type: "Sports",
-    order: 4,
-    media: [
-      { id: "g-spt-1", url: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "LSU Cricket squad securing the State Championship Trophy" },
-      { id: "g-spt-2", url: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "Track athletes clocking personal bests in NCR tournaments" }
-    ]
-  },
-  {
-    id: "album-cultural",
-    title: "Sanskriti & Imperial Music Showcases",
-    type: "Cultural",
-    order: 5,
-    media: [
-      { id: "g-cul-1", url: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "LSU Fusion band headlining the annual Sanskriti rock night" },
-      { id: "g-cul-2", url: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "Indian musical play presented by final year arts candidates" }
+      { id: "g-cnv-1", url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "Graduating engineers celebrating class unity" },
+      { id: "g-cnv-2", url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&auto=format&fit=crop&q=80", type: "image", caption: "Chancellor presenting academic honors and gold medals" }
     ]
   }
 ];
