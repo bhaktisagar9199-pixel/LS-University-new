@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Search, CheckCircle2, AlertTriangle, Printer, QrCode, ShieldCheck, Download, Award, FileSpreadsheet } from "lucide-react";
+import { Search, CheckCircle2, AlertTriangle, Printer, QrCode, ShieldCheck, Award } from "lucide-react";
 import { Certificate } from "../types";
 
 interface CertificateVerificationProps {
   certificates: Certificate[];
-  onSearch?: (query: string) => Promise<Certificate | null>;
 }
 
 export default function CertificateVerification({ certificates }: CertificateVerificationProps) {
@@ -29,14 +28,13 @@ export default function CertificateVerification({ certificates }: CertificateVer
     const found = certificates.find(
       (c) =>
         c.certificateNo.toLowerCase() === query ||
-        c.enrollmentNo.toLowerCase() === query ||
-        c.studentName.toLowerCase().includes(query)
+        c.enrollmentNo.toLowerCase() === query
     );
 
     if (found) {
       setVerifiedCert(found);
     } else {
-      setErrorMsg("No matching verified educational credential found. Please check credential coordinates.");
+      setErrorMsg("No matching verified educational credential found in the registry. Please check credential coordinates.");
     }
   };
 
@@ -44,51 +42,24 @@ export default function CertificateVerification({ certificates }: CertificateVer
     window.print();
   };
 
-  // Safe Excel Export representation in Client State
-  const handleExportCSV = () => {
-    if (certificates.length === 0) return;
-    const headers = ["Certificate ID", "Enrollment ID", "Student Name", "Course Track", "Division/Grade", "Issue Date", "Status"];
-    const rows = certificates.map(c => [c.certificateNo, c.enrollmentNo, c.studentName, c.course, c.grade, c.issueDate, c.status]);
-    const csvContent = "data:text/csv;charset=utf-8," 
-      + [headers.join(","), ...rows.map(e => e.map(val => `"${val}"`).join(","))].join("\n");
-    
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `LSURL_Verified_Registry_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" id="cert-verification-portal">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-fadeIn" id="cert-verification-portal">
       
       {/* 1. Header Hero Panel */}
-      <div className="bg-gradient-to-br from-[#0A192F] via-[#030712] to-[#1E3A8A]/30 border border-[#D4AF37]/30 rounded-2xl p-8 md:p-12 text-center text-white mb-10 shadow-2xl relative overflow-hidden" id="cert-banner">
+      <div className="bg-gradient-to-br from-[#2E080F] via-[#060B13] to-[#58111A]/35 border border-[#D4AF37]/35 rounded-2xl p-8 md:p-12 text-center text-white mb-10 shadow-2xl relative overflow-hidden" id="cert-banner">
         <div className="absolute top-0 left-0 w-24 h-24 bg-[#D4AF37]/10 rounded-full blur-2xl" />
-        <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#1E3A8A]/20 rounded-full blur-2xl" />
+        <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#58111A]/20 rounded-full blur-2xl" />
         
         <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-1.5 px-4 y-1 border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37] font-mono text-xs uppercase rounded-full">
-            <ShieldCheck className="w-4 h-4 animate-pulse" /> Secure Block Audit
+          <div className="inline-flex items-center gap-1.5 px-4 py-1 border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37] font-mono text-xs uppercase rounded-full">
+            <ShieldCheck className="w-4 h-4 animate-pulse" /> Official SECURED Registry
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-[#E5E7EB] to-[#D4AF37] uppercase">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-[#EAE0D5] to-[#D4AF37] uppercase font-serif">
             Credential Verification Portal
           </h1>
           <p className="text-gray-300 text-sm md:text-base leading-relaxed">
-            Verify academic transcripts, degree certificates, and doctoral credentials issued by Laxmi Shanker University. Confirmed via live database registry.
+            Verify academic transcripts, degree certificates, and doctoral credentials issued by Lakshmi Sehgal University. Confirmed via live blockchain-secured database registry.
           </p>
-          
-          <div className="pt-2 flex justify-center gap-3">
-            <button
-              onClick={handleExportCSV}
-              className="px-4 py-2 bg-slate-900 border border-[#D4AF37]/30 text-xs font-semibold text-[#D4AF37] rounded-lg hover:bg-slate-800 transition-all flex items-center gap-1.5 cursor-pointer shadow"
-              title="Export complete database layout for audit verification"
-            >
-              <FileSpreadsheet className="w-4 h-4" /> Export Registry Metadata (CSV)
-            </button>
-          </div>
         </div>
       </div>
 
@@ -96,45 +67,28 @@ export default function CertificateVerification({ certificates }: CertificateVer
         
         {/* Helper Panel (Left 4 cols) */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="bg-[#0B1B3D]/30 border border-[#D4AF37]/10 rounded-xl p-6 shadow-lg relative overflow-hidden" id="cert-info">
+          <div className="bg-[#130306]/55 border border-[#D4AF37]/20 rounded-xl p-6 shadow-lg relative overflow-hidden" id="cert-info">
             <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-              <Award className="w-5 h-5 text-[#D4AF37]" /> Verification Guidelines
+              <Award className="w-5 h-5 text-[#D4AF37]" /> Registration Guidelines
             </h3>
-            <ul className="space-y-3.5 text-xs text-slate-300 leading-relaxed">
-              <li className="flex gap-2">
-                <span className="text-[#D4AF37] font-bold">1.</span>
-                <span>Type in the official enrollment/roll parameter (e.g. <code className="bg-white/5 py-0.5 px-1 rounded text-white">LS2022CSE402</code>) or the certificate credential serial.</span>
+            <ul className="space-y-4 text-xs text-slate-300 leading-relaxed">
+              <li className="flex gap-2.5">
+                <span className="text-[#D4AF37] font-bold text-sm">1.</span>
+                <span>Enter the official enrollment registration number (e.g. <code className="bg-white/5 py-0.5 px-1 rounded text-white font-mono">LSU2022CSE402</code>) or the certificate serial code.</span>
               </li>
-              <li className="flex gap-2">
-                <span className="text-[#D4AF37] font-bold">2.</span>
-                <span>A fully compliant academic award layout will materialize with QR verification logs.</span>
+              <li className="flex gap-2.5">
+                <span className="text-[#D4AF37] font-bold text-sm">2.</span>
+                <span>An authorized digital diploma with dynamic administrative signatures will load immediately upon a correct registry match.</span>
               </li>
-              <li className="flex gap-2">
-                <span className="text-[#D4AF37] font-bold">3.</span>
-                <span>Press <kbd className="bg-white/10 px-1 py-0.5 rounded text-white text-[10px]">Ctrl+P</kbd> or click the <b>Print</b> icon to produce high-resolution hard copies.</span>
+              <li className="flex gap-2.5">
+                <span className="text-[#D4AF37] font-bold text-sm">3.</span>
+                <span>Press <kbd className="bg-white/10 px-1 py-0.5 rounded text-white text-[10px]">Ctrl+P</kbd> or click the <b>Print</b> command to compile high-resolution physical documents.</span>
               </li>
             </ul>
           </div>
-
-          {/* Quick Demo Preloads */}
-          <div className="bg-[#030712]/40 border border-[#D4AF37]/10 rounded-xl p-5" id="cert-presets">
-            <h4 className="text-xs font-mono uppercase tracking-widest text-[#D4AF37] mb-3">Sample Credentials</h4>
-            <div className="space-y-2">
-              <button 
-                onClick={() => setSearchQuery("LS2022CSE402")}
-                className="w-full text-left p-2.5 bg-slate-900 hover:bg-slate-800 border-l-2 border-[#D4AF37] rounded text-xs text-gray-300 transition-all flex justify-between items-center cursor-pointer"
-              >
-                <span>B.Tech CSE: Aditya Vardhan</span>
-                <span className="text-[10px] font-mono text-[#D4AF37]">Preload</span>
-              </button>
-              <button 
-                onClick={() => setSearchQuery("LSU-1129-9238")}
-                className="w-full text-left p-2.5 bg-slate-900 hover:bg-slate-800 border-l-2 border-[#D4AF37] rounded text-xs text-gray-300 transition-all flex justify-between items-center cursor-pointer"
-              >
-                <span>MBA: Priyanka Chandani</span>
-                <span className="text-[10px] font-mono text-[#D4AF37]">Preload</span>
-              </button>
-            </div>
+          
+          <div className="bg-blue-950/25 border border-dashed border-[#D4AF37]/20 rounded-xl p-5 text-center text-gray-400 text-xs">
+            🔒 Secured with LSU cryptographic protocols. Public listings are disabled to protect student transcripts.
           </div>
         </div>
 
@@ -142,14 +96,14 @@ export default function CertificateVerification({ certificates }: CertificateVer
         <div className="lg:col-span-8 space-y-8">
           
           {/* Main search form */}
-          <form onSubmit={handleSearch} className="bg-gradient-to-r from-[#0A192F] to-[#030712] border border-[#D4AF37]/30 rounded-xl p-6 shadow-xl" id="cert-form">
+          <form onSubmit={handleSearch} className="bg-gradient-to-r from-[#21050A] to-[#0A111C] border border-[#D4AF37]/35 rounded-xl p-6 shadow-xl" id="cert-form">
             <h3 className="text-sm font-semibold text-white mb-3">Enter Student or Certificate Coordinates</h3>
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#D4AF37] w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Enrollment Number (e.g. LS2022CSE402) or Certificate ID"
+                  placeholder="Enrollment Number (e.g. LSU2022CSE402) or Certificate ID"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-slate-950 border border-[#D4AF37]/30 focus:border-[#D4AF37] rounded-lg pl-11 pr-4 py-3.5 text-white text-sm focus:outline-none placeholder-gray-500 font-mono tracking-wide"
@@ -157,9 +111,9 @@ export default function CertificateVerification({ certificates }: CertificateVer
               </div>
               <button
                 type="submit"
-                className="bg-[#D4AF37] hover:bg-[#C29E30] text-black font-bold uppercase tracking-wider text-xs px-8 py-3.5 sm:py-0 rounded-lg transition-all cursor-pointer shadow-lg active:scale-95"
+                className="bg-gradient-to-r from-[#D4AF37] to-[#EAE0D5] hover:opacity-95 text-black font-bold uppercase tracking-wider text-xs px-8 py-3.5 sm:py-0 rounded-lg transition-all cursor-pointer shadow-lg active:scale-95 flex items-center justify-center gap-1.5"
               >
-                Verify Now
+                <Search className="w-4 h-4" /> Verify Now
               </button>
             </div>
           </form>
@@ -174,12 +128,12 @@ export default function CertificateVerification({ certificates }: CertificateVer
                     <CheckCircle2 className="w-6 h-6 flex-shrink-0 text-emerald-400" />
                     <div>
                       <h4 className="text-sm font-bold uppercase tracking-wider text-white">Verification Confirmed</h4>
-                      <p className="text-xs text-emerald-200">The academic registry validates this record as authentic and active in campus archives.</p>
+                      <p className="text-xs text-emerald-200">The LSU academic registry validates this record as authentic and active in university archives.</p>
                     </div>
                   </div>
 
                   {/* 100% Gorgeous Framed Certificate Mockup */}
-                  <div className="bg-white text-black p-8 md:p-14 rounded-xl shadow-2xl border-[16px] border-[#0A192F] relative overflow-hidden" id="academic-certificate-print">
+                  <div className="bg-white text-black p-8 md:p-14 rounded-xl shadow-2xl border-[16px] border-[#58111A] relative overflow-hidden" id="academic-certificate-print">
                     
                     {/* Visual Guilloche Border effect with css lines */}
                     <div className="absolute inset-2 border-2 border-[#D4AF37] pointer-events-none" />
@@ -195,8 +149,8 @@ export default function CertificateVerification({ certificates }: CertificateVer
                       {/* University Header logo */}
                       <div className="flex flex-col items-center space-y-2">
                         <Award className="w-12 h-12 text-[#D4AF37]" />
-                        <h2 className="text-2xl font-serif font-bold tracking-widest text-slate-900">
-                          LAXMI SHANKER UNIVERSITY
+                        <h2 className="text-2xl font-serif font-bold tracking-widest text-[#58111A]">
+                          LAKSHMI SEHGAL UNIVERSITY
                         </h2>
                         <span className="text-[10px] font-mono tracking-[4px] text-gray-500 uppercase">
                           Noida, Delhi NCR, India
@@ -207,7 +161,7 @@ export default function CertificateVerification({ certificates }: CertificateVer
                         <span className="block font-serif italic text-lg text-slate-700">
                           This is to certify that
                         </span>
-                        <h3 className="text-2xl md:text-3xl font-serif font-semibold text-[#0A192F] tracking-wide mt-2">
+                        <h3 className="text-2xl md:text-3xl font-serif font-semibold text-[#58111A] tracking-wide mt-2">
                           {verifiedCert.studentName}
                         </h3>
                         <p className="text-xs font-mono text-gray-400 mt-1">
@@ -248,10 +202,10 @@ export default function CertificateVerification({ certificates }: CertificateVer
 
                         {/* 3. Signature */}
                         <div className="text-center font-serif text-slate-600 text-xs">
-                          <span className="font-cursive text-slate-800 block text-sm italic font-semibold border-b border-gray-300 pb-1 px-4">
-                            Dr. L. S. Dixit
+                          <span className="font-sans text-slate-800 block text-xs italic font-semibold border-b border-gray-300 pb-1 px-4">
+                            Dr. Sandeep Pathak
                           </span>
-                          <span className="text-[10px] text-gray-400 block mt-1 uppercase tracking-wider font-mono">Registrar / VC</span>
+                          <span className="text-[10px] text-gray-400 block mt-1 uppercase tracking-wider font-mono">Registrar / Vice Chancellor</span>
                         </div>
 
                       </div>
@@ -269,7 +223,7 @@ export default function CertificateVerification({ certificates }: CertificateVer
                   <div className="flex justify-end gap-3" id="cert-actions">
                     <button
                       onClick={handlePrint}
-                      className="px-6 py-3 bg-[#0A192F] text-white font-bold rounded-lg hover:bg-slate-800 transition-all text-xs flex items-center gap-2 cursor-pointer shadow-md"
+                      className="px-6 py-3 bg-[#58111A] text-white font-bold rounded-lg hover:bg-[#6b1d2f] transition-all text-xs flex items-center gap-2 cursor-pointer shadow-md"
                     >
                       <Printer className="w-4 h-4 text-[#D4AF37]" /> Print Certificate Archive
                     </button>

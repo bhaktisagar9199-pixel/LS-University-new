@@ -17,10 +17,10 @@ export default function Footer({ config, onNavigate }: FooterProps) {
   };
 
   return (
-    <footer className="bg-[#030712] text-[#E5E7EB] border-t border-[#D4AF37]/20 relative overflow-hidden" id="footer-main">
+    <footer className="bg-[#050001] text-[#E5E7EB] border-t border-[#D4AF37]/30 relative overflow-hidden" id="footer-main">
       {/* Luxury Background Ambient Gradients */}
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#D4AF37]/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#1E3A8A]/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#58111A]/10 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         

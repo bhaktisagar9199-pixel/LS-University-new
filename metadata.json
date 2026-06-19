@@ -1,5 +1,5 @@
 {
-  "name": "LS University new",
+  "name": "Lakshmi Sehgal University",
   "description": "A world-class university educational web application featuring an advanced, real-time dynamic drag-and-drop page builder, programmatic degree course management CMS, student credential verification portal, and role-based permissions integrated with Firebase.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

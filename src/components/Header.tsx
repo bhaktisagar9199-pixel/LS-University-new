@@ -22,7 +22,7 @@ export default function Header({ config, allPages, activeSlug, onNavigate, isAdm
   };
 
   return (
-    <header className="w-full z-50 sticky top-0 bg-[#0A192F]/95 backdrop-blur-md border-b border-[#D4AF37]/20 text-white shadow-xl" id="header-main">
+    <header className="w-full z-50 sticky top-0 bg-[#0D0204]/97 backdrop-blur-md border-b border-[#D4AF37]/30 text-white shadow-2xl transition-all duration-300" id="header-main">
       {/* 1. Ticker and Credentials Banner */}
       {config.announcementTicker && (
         <div className="w-full bg-[#030712] border-b border-[#D4AF37]/10 py-1.5 px-4 text-xs font-mono flex items-center gap-2 overflow-hidden" id="header-ticker">

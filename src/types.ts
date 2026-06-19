@@ -111,3 +111,18 @@ export interface Notice {
   pdfUrl?: string;
   published: boolean;
 }
+
+export interface GalleryMediaItem {
+  id: string;
+  url: string;
+  type: "image" | "video";
+  caption?: string;
+}
+
+export interface GalleryAlbum {
+  id: string;
+  title: string;
+  type: "Campus" | "Events" | "Convocation" | "Sports" | "Cultural";
+  order: number;
+  media: GalleryMediaItem[];
+}

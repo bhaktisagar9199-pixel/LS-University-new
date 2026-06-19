@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { onSnapshot, collection, doc } from "firebase/firestore";
+import { onSnapshot, collection, doc, setDoc } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType, firebaseMetadata, firebaseEnvError, isDevMode } from "./firebase";
-import { SiteConfig, PageData, Course, Certificate, Notice } from "./types";
+import { SiteConfig, PageData, Course, Certificate, Notice, GalleryAlbum } from "./types";
 import { 
-  DEFAULT_SITE_CONFIG, DEFAULT_PAGES, DEMO_COURSES, DEMO_CERTIFICATES, DEMO_NOTICES 
+  DEFAULT_SITE_CONFIG, DEFAULT_PAGES, DEMO_COURSES, DEMO_CERTIFICATES, DEMO_NOTICES, DEMO_GALLERY_ALBUMS 
 } from "./demoData";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -22,6 +22,7 @@ export default function App() {
   const [courses, setCourses] = useState<Course[]>(DEMO_COURSES);
   const [certificates, setCertificates] = useState<Certificate[]>(DEMO_CERTIFICATES);
   const [notices, setNotices] = useState<Notice[]>(DEMO_NOTICES);
+  const [galleryAlbums, setGalleryAlbums] = useState<GalleryAlbum[]>(DEMO_GALLERY_ALBUMS);
 
   // Connection & Loading indicators
   const [isDbLoaded, setIsDbLoaded] = useState(false);
@@ -47,13 +48,16 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // --- FIRESTORE REALTIME SYNC (onSnapshot) ---
+  // --- FIRESTORE REALTIME SYNC (onSnapshot) WITH AUTOMATIC PERSISTENT INITIAL SEEDING ---
   useEffect(() => {
     
     // 1. Site Config Sync
     const unsubConfig = onSnapshot(doc(db, "site_config", "main_settings"), (snap) => {
       if (snap.exists()) {
         setSiteConfig(snap.data() as SiteConfig);
+      } else {
+        // Automatically seed empty Firestore
+        setDoc(doc(db, "site_config", "main_settings"), DEFAULT_SITE_CONFIG).catch((err) => console.warn(err));
       }
     }, (err) => {
       console.warn("Using offline brand config template.", err);
@@ -69,6 +73,11 @@ export default function App() {
         // Sort home first if available, otherwise chronologically
         list.sort((a, b) => (a.slug === "" ? -1 : b.slug === "" ? 1 : 0));
         setPages(list);
+      } else {
+        // Automatically seed empty Firestore
+        DEFAULT_PAGES.forEach((pg) => {
+          setDoc(doc(db, "pages", pg.id), pg).catch((err) => console.warn(err));
+        });
       }
     }, (err) => {
       console.warn("Using offline dynamic sitemap pages.", err);
@@ -82,6 +91,11 @@ export default function App() {
           list.push({ id: docSnap.id, ...docSnap.data() } as Course);
         });
         setCourses(list);
+      } else {
+        // Automatically seed empty Firestore
+        DEMO_COURSES.forEach((crs) => {
+          setDoc(doc(db, "courses", crs.id), crs).catch((err) => console.warn(err));
+        });
       }
     }, (err) => {
       console.warn("Using offline degree curriculum catalog.", err);
@@ -95,6 +109,11 @@ export default function App() {
           list.push({ id: docSnap.id, ...docSnap.data() } as Certificate);
         });
         setCertificates(list);
+      } else {
+        // Automatically seed empty Firestore
+        DEMO_CERTIFICATES.forEach((cert) => {
+          setDoc(doc(db, "certificates", cert.id), cert).catch((err) => console.warn(err));
+        });
       }
     }, (err) => {
       console.warn("Using offline academic verification certificates.", err);
@@ -110,9 +129,33 @@ export default function App() {
         // Sort newest published date first
         list.sort((a, b) => b.date.localeCompare(a.date));
         setNotices(list);
+      } else {
+        // Automatically seed empty Firestore
+        DEMO_NOTICES.forEach((n) => {
+          setDoc(doc(db, "notices", n.id), n).catch((err) => console.warn(err));
+        });
       }
     }, (err) => {
       console.warn("Using offline administration bulletin timeline.", err);
+    });
+
+    // 6. Gallery Albums Collection Sync
+    const unsubGallery = onSnapshot(collection(db, "gallery_albums"), (snap) => {
+      if (!snap.empty) {
+        const list: GalleryAlbum[] = [];
+        snap.forEach((docSnap) => {
+          list.push({ id: docSnap.id, ...docSnap.data() } as GalleryAlbum);
+        });
+        list.sort((a, b) => a.order - b.order);
+        setGalleryAlbums(list);
+      } else {
+        // Automatically seed empty Firestore
+        DEMO_GALLERY_ALBUMS.forEach((album) => {
+          setDoc(doc(db, "gallery_albums", album.id), album).catch((err) => console.warn(err));
+        });
+      }
+    }, (err) => {
+      console.warn("Using offline gallery albums.", err);
     });
 
     setIsDbLoaded(true);
@@ -123,6 +166,7 @@ export default function App() {
       unsubCourses();
       unsubCerts();
       unsubNotices();
+      unsubGallery();
     };
   }, []);
 
@@ -142,7 +186,26 @@ export default function App() {
       );
     }
 
-    // B. Explicit Route: Secure Admin CMS Dashboard
+    // B. Explicit Route: Interactive Dynamic Campus Gallery Segment
+    if (activeSlug === "gallery") {
+      return (
+        <SectionRenderer 
+          sections={[{
+            id: "gallery-page-container",
+            type: "gallery",
+            title: "LSU Royal Archives & Gallery",
+            subtitle: "EXPLORING THE PALATIAL ESTATES OF LAKSHMI SEHGAL ACADEMIA",
+            content: {}
+          }]}
+          courses={courses}
+          notices={notices}
+          onNavigate={navigateTo}
+          galleryAlbums={galleryAlbums}
+        />
+      );
+    }
+
+    // C. Explicit Route: Secure Admin CMS Dashboard
     if (activeSlug === "admin") {
       return (
         <AdminDashboard
@@ -151,16 +214,18 @@ export default function App() {
           courses={courses}
           certificates={certificates}
           notices={notices}
+          galleryAlbums={galleryAlbums}
           onSiteConfigUpdate={setSiteConfig}
           onPagesUpdate={setPages}
           onCoursesUpdate={setCourses}
           onCertificatesUpdate={setCertificates}
           onNoticesUpdate={setNotices}
+          onGalleryAlbumsUpdate={setGalleryAlbums}
         />
       );
     }
 
-    // C. Dynamic CMS Page Rendering
+    // D. Dynamic CMS Page Rendering
     if (currentPage) {
       return (
         <SectionRenderer 
@@ -168,11 +233,12 @@ export default function App() {
           courses={courses}
           notices={notices}
           onNavigate={navigateTo}
+          galleryAlbums={galleryAlbums}
         />
       );
     }
 
-    // D. 404/Missing route fallback: render dynamic homepage
+    // E. 404/Missing route fallback: render dynamic homepage
     const homePage = pages.find(p => p.slug === "") || DEFAULT_PAGES[0];
     return (
       <SectionRenderer 
@@ -180,6 +246,7 @@ export default function App() {
         courses={courses}
         notices={notices}
         onNavigate={navigateTo}
+        galleryAlbums={galleryAlbums}
       />
     );
   };
