@@ -59,7 +59,7 @@ export default function CertificateVerification({ certificates, config }: Certif
             Credential Verification Portal
           </h1>
           <p className="text-gray-300 text-sm md:text-base leading-relaxed">
-            Verify academic transcripts, degree certificates, and doctoral credentials issued by {config?.universityName || "Lakshmi Sehgal University"}. Confirmed via live blockchain-secured database registry.
+            Verify academic transcripts, degree certificates, and doctoral credentials issued by {config?.universityName || "LS University"}. Confirmed via live blockchain-secured database registry.
           </p>
         </div>
       </div>

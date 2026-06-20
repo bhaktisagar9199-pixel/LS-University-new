@@ -202,7 +202,7 @@ export default function AdminDashboard({
       notices,
       galleryAlbums,
       exportedAt: new Date().toISOString(),
-      branding: `${siteConfig?.universityName || "Lakshmi Sehgal University"} Safety Registry`
+      branding: `${siteConfig?.universityName || "LS University"} Safety Registry`
     };
     const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -297,8 +297,8 @@ export default function AdminDashboard({
       id: cleanId,
       title: newPageTitle,
       slug: slugPlain,
-      seoTitle: `${newPageTitle} | ${siteConfig?.universityName || "Lakshmi Sehgal University"}`,
-      seoDesc: `${siteConfig?.universityName || "Lakshmi Sehgal University"} dynamic information page for ${newPageTitle}`,
+      seoTitle: `${newPageTitle} | ${siteConfig?.universityName || "LS University"}`,
+      seoDesc: `${siteConfig?.universityName || "LS University"} dynamic information page for ${newPageTitle}`,
       published: true,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -550,7 +550,7 @@ export default function AdminDashboard({
       issueDate: newCert.issueDate || new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' }),
       grade: newCert.grade || "9.0 CGPA",
       status: (newCert.status as any) || "Verified",
-      qrCodeValue: `${newCert.certificateNo}|${newCert.enrollmentNo}|${newCert.studentName}|Verified|${siteConfig?.universityName || "Lakshmi Sehgal University"} Security Registry`,
+      qrCodeValue: `${newCert.certificateNo}|${newCert.enrollmentNo}|${newCert.studentName}|Verified|${siteConfig?.universityName || "LS University"} Security Registry`,
       remarks: newCert.remarks || ""
     };
 
@@ -667,7 +667,7 @@ export default function AdminDashboard({
               CMS ADMINISTRATIVE ACCESS
             </h2>
             <p className="text-xs text-gray-400 font-mono">
-              {siteConfig?.universityName || "Lakshmi Sehgal University"} Portal Centralized CMS Gateway
+              {siteConfig?.universityName || "LS University"} Portal Centralized CMS Gateway
             </p>
           </div>
 
@@ -867,7 +867,7 @@ export default function AdminDashboard({
                 <h1 className="text-3xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-white block to-[#D4AF37]">
                   ADMINISTRATION SUMMARY
                 </h1>
-                <p className="text-xs text-gray-400 font-mono mt-1">Real-time status metrics of {siteConfig?.universityName || "Lakshmi Sehgal University"} dynamic database nodes.</p>
+                <p className="text-xs text-gray-400 font-mono mt-1">Real-time status metrics of {siteConfig?.universityName || "LS University"} dynamic database nodes.</p>
               </div>
               <div className="text-xs font-mono bg-slate-900 border border-[#D4AF37]/20 rounded px-3 py-1.5 flex items-center gap-1.5 text-gray-300">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />

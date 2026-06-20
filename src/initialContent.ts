@@ -1,8 +1,8 @@
 import { SiteConfig, PageData, Course, Certificate, Notice, MediaItem, GalleryAlbum } from "./types";
 
 export const INITIAL_SITE_CONFIG: SiteConfig = {
-  universityName: "Lakshmi Sehgal University",
-  logoText: "LAKSHMI SEHGAL UNIVERSITY",
+  universityName: "LS University",
+  logoText: "LS UNIVERSITY",
   logoUrl: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=160&auto=format&fit=crop&q=80",
   accreditationBadge: "Govt Approved UGC Under Sec 2(f) | NAAC A++ Accredited (CGPA 3.82) | NIRF Top 30",
   contactEmail: "admissions@lsu.edu.in",
@@ -10,8 +10,8 @@ export const INITIAL_SITE_CONFIG: SiteConfig = {
   address: "Lakshmi Sehgal Knowledge Estates, Sector 128, Noida-Greater Noida Expressway, NCR 201304, India",
   goldAccentColor: "#D4AF37", // Premium Gold
   primaryThemeColor: "#58111A", // Royal Burgundy
-  seoTitle: "Lakshmi Sehgal University | Elite Educational Excellence & Leadership",
-  seoDescription: "An elite Indian institution committed to high-fidelity computing, global management, liberal sciences, and path-breaking multidisciplinary research.",
+  seoTitle: "LS University | Admissions, Courses, Placements",
+  seoDescription: "LS University offers B.Tech, BCA, MCA, MBA, BBA, BA, B.Com and B.Sc programs with modern campus facilities.",
   socialLinks: {
     facebook: "https://facebook.com/lsu_india",
     twitter: "https://twitter.com/lsu_india",
@@ -84,8 +84,8 @@ export const INITIAL_PAGES: PageData[] = [
     id: "home",
     title: "Home",
     slug: "",
-    seoTitle: "Lakshmi Sehgal University | Premium Tech Campus NCR",
-    seoDesc: "Experience high-fidelity learning models at Lakshmi Sehgal University. Advanced computer labs, direct placement tracks.",
+    seoTitle: "LS University | Premium Tech Campus NCR",
+    seoDesc: "Experience high-fidelity learning models at LS University. Advanced computer labs, direct placement tracks.",
     published: true,
     createdAt: "2026-06-14T00:00:00.000Z",
     updatedAt: "2026-06-14T00:00:00.000Z",
@@ -93,7 +93,7 @@ export const INITIAL_PAGES: PageData[] = [
       {
         id: "sec-home-hero",
         type: "hero",
-        title: "Lakshmi Sehgal University",
+        title: "LS University",
         subtitle: "SHAPING SCIENTIFIC PIONEERS AND TECH ARCHITECTS",
         content: {
           tagline: "An elite smart research campus offering advanced software development pipelines, strategic finance systems, and robust multidisciplinary domains.",
@@ -123,7 +123,7 @@ export const INITIAL_PAGES: PageData[] = [
         type: "infosection",
         title: "The Intellectual Sanctuary of Future Innovators",
         content: {
-          desc: "Lakshmi Sehgal University is designed to eliminate academic silos. In partnership with industry leaders, our intensive curricula leverage real-world cases, advanced laboratories, and high-performance research clusters. Our premium spaces and dedicated faculty transition you from a digital consumer to an architect of global tech platforms.",
+          desc: "LS University is designed to eliminate academic silos. In partnership with industry leaders, our intensive curricula leverage real-world cases, advanced laboratories, and high-performance research clusters. Our premium spaces and dedicated faculty transition you from a digital consumer to an architect of global tech platforms.",
           imageUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=80",
           layout: "text-left",
           buttonText: "Accreditation Portfolio",
@@ -188,8 +188,8 @@ export const INITIAL_PAGES: PageData[] = [
     id: "about",
     title: "About Us",
     slug: "about",
-    seoTitle: "Chancellery Board & Vision | Lakshmi Sehgal University",
-    seoDesc: "Discover the leadership team, Chancellor's vision, and National Accreditations of Lakshmi Sehgal University.",
+    seoTitle: "Chancellery Board & Vision | LS University",
+    seoDesc: "Discover the leadership team, Chancellor's vision, and National Accreditations of LS University.",
     published: true,
     createdAt: "2026-06-14T00:00:00.000Z",
     updatedAt: "2026-06-14T00:00:00.000Z",
@@ -198,9 +198,9 @@ export const INITIAL_PAGES: PageData[] = [
         id: "sec-about-hero",
         type: "hero",
         title: "The LSU Legacy & Creed",
-        subtitle: "ACADEMIC INTELLECT, COLLABORATIVE FREEDOM, PATRIARCHICAL LEADERSHIP",
+        subtitle: "ACADEMIC INTELLECT, COLLABORATIVE FREEDOM, LEADERSHIP",
         content: {
-          tagline: "Lakshmi Sehgal University structures autonomous research teams dedicated to bypassing bureaucratic hoops and engineering state-of-the-art societal frameworks.",
+          tagline: "LS University structures autonomous research teams dedicated to bypassing bureaucratic hoops and engineering state-of-the-art societal frameworks.",
           bgImage: "https://images.unsplash.com/photo-1562774053-701939374585?w=1600&auto=format&fit=crop&q=80",
           ctaText1: "Explore Course Catalog",
           ctaLink1: "/courses"
@@ -209,9 +209,9 @@ export const INITIAL_PAGES: PageData[] = [
       {
         id: "sec-about-vision",
         type: "infosection",
-        title: "Desk of the Chancellor: Dr. Arvind Sehgal",
+        title: "Desk of the Chancellor: Dr. Arvind Sinha",
         content: {
-          desc: "Our mission is to establish an elite academic tech sanctuary, nurturing talent that drives the nation's scientific evolution. By investing in carbon-neutral campuses, modern clean-energy labs, and direct cloud collaborations, we guarantee our graduates lead corporate spheres immediately upon graduation. Lakshmi Sehgal University stands as a monument to scientific persistence.",
+          desc: "Our mission is to establish an elite academic tech sanctuary, nurturing talent that drives the nation's scientific evolution. By investing in carbon-neutral campuses, modern clean-energy labs, and direct cloud collaborations, we guarantee our graduates lead corporate spheres immediately upon graduation. LS University stands as a monument to scientific persistence.",
           imageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&auto=format&fit=crop&q=80",
           layout: "text-right",
           buttonText: "Register Consultation Profile",
@@ -351,7 +351,7 @@ export const INITIAL_CERTIFICATES: Certificate[] = [
     issueDate: "June 14, 2025",
     grade: "9.82 CGPA",
     status: "Verified",
-    qrCodeValue: "LSU-9283-1029|LSU2022CSE402|Aditya Vardhan Dixit|B.Tech CSE|Verified|Lakshmi Sehgal University Security Registry",
+    qrCodeValue: "LSU-9283-1029|LSU2022CSE402|Aditya Vardhan Dixit|B.Tech CSE|Verified|LS University Security Registry",
     remarks: "Ranked 3rd in the CSE batch. Recipient of Dean's Scientific Roll of Honour."
   },
   {
@@ -363,7 +363,7 @@ export const INITIAL_CERTIFICATES: Certificate[] = [
     issueDate: "June 14, 2025",
     grade: "9.45 CGPA",
     status: "Verified",
-    qrCodeValue: "LSU-1129-9238|LSU2023MBA045|Priyanka Chandani|MBA Digital Business|Verified|Lakshmi Sehgal University Security Registry",
+    qrCodeValue: "LSU-1129-9238|LSU2023MBA045|Priyanka Chandani|MBA Digital Business|Verified|LS University Security Registry",
     remarks: "Elected President of LSU Fintech Council. Outstanding Innovation Awardee."
   }
 ];

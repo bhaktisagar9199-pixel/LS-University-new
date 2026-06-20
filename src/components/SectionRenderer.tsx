@@ -145,7 +145,7 @@ export default function SectionRenderer({
                       className="text-4xl sm:text-6xl lg:text-8xl font-serif font-extrabold tracking-tight text-white leading-none"
                     >
                       <span className="block text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-[#F4E6C1]">
-                        {(title === "Lakshmi Sehgal University" || title === "LS University new" || !title) ? (config?.universityName || "Lakshmi Sehgal University") : title}
+                        {(title === "Lakshmi Sehgal University" || title === "LS University" || title === "LS University new" || !title) ? (config?.universityName || "LS University") : title}
                       </span>
                     </motion.h1>
                     
