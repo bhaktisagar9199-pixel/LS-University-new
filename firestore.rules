@@ -59,6 +59,12 @@ service cloud.firestore {
       allow write: if isSuperAdminOrAdmin() && isValidId(certId);
     }
 
+    // --- CERTIFICATE TEMPLATES RULES ---
+    match /certificate_templates/{templateId} {
+      allow read: if true; // anyone can load the certificate template to render a verified certificate
+      allow write: if isSuperAdminOrAdmin() && isValidId(templateId);
+    }
+
     // --- NOTICES RULES (BULLET TIMES) ---
     match /notices/{noticeId} {
       allow read: if true; // Anyone can read bulletins

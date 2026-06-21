@@ -10,13 +10,6 @@ import { motion, AnimatePresence } from "motion/react";
 import { db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
 
-const DEMO_PLACEMENTS = [
-  { studentName: "Siddharth Goel", companyName: "Google India", package: "₹48.4 LPA", course: "B.Tech CSE, 2024", image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=120&auto=format&fit=crop&q=80" },
-  { studentName: "Avni Kapoor", companyName: "Amazon Web Services", package: "₹34.5 LPA", course: "B.Tech IT, 2025", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80" },
-  { studentName: "Ritvik Sharma", companyName: "NVIDIA Corp Research", package: "₹42.0 LPA", course: "M.Tech AI, 2024", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=120&auto=format&fit=crop&q=80" },
-  { studentName: "Simran Johar", companyName: "Deloitte Core strategy", package: "₹18.0 LPA", course: "MBA Digital Business, 2025", image: "https://images.unsplash.com/photo-1594744803329-e58b31de215f?w=120&auto=format&fit=crop&q=80" }
-];
-
 interface SectionRendererProps {
   sections: PageSection[];
   courses: Course[];
@@ -145,7 +138,7 @@ export default function SectionRenderer({
                       className="text-4xl sm:text-6xl lg:text-8xl font-serif font-extrabold tracking-tight text-white leading-none"
                     >
                       <span className="block text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-[#F4E6C1]">
-                        {(title === "Lakshmi Sehgal University" || title === "LS University" || title === "LS University new" || !title) ? (config?.universityName || "LS University") : title}
+                        {(title === "LAKSHMI SEHGAL UNIVERSITY" || title === "Lakshmi Sehgal University" || title === "LS University" || title === "LS University new" || !title) ? (config?.universityName || "LAKSHMI SEHGAL UNIVERSITY") : title}
                       </span>
                     </motion.h1>
                     
@@ -692,7 +685,7 @@ export default function SectionRenderer({
                   <div className="space-y-6">
                     <h3 className="text-xs uppercase tracking-[3px] font-mono text-[#D4AF37] text-center font-bold">Hall of Fame Corporate Placements</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                      {(content?.items || DEMO_PLACEMENTS).map((rec: any, i: number) => (
+                      {(content?.items || []).map((rec: any, i: number) => (
                         <motion.div 
                           key={i} 
                           whileHover={{ y: -6, borderColor: "#DFBA5A" }}

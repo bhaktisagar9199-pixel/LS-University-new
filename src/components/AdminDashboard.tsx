@@ -14,11 +14,12 @@ import {
   collection, doc, setDoc, getDocs, deleteDoc, updateDoc, writeBatch, onSnapshot
 } from "firebase/firestore";
 import { 
-  SiteConfig, PageData, Course, Certificate, MediaItem, PageSection, Notice, GalleryAlbum, GalleryMediaItem 
+  SiteConfig, PageData, Course, Certificate, MediaItem, PageSection, Notice, GalleryAlbum, GalleryMediaItem, CertificateTemplate 
 } from "../types";
 import { 
   INITIAL_SITE_CONFIG, INITIAL_PAGES, INITIAL_COURSES, INITIAL_CERTIFICATES, INITIAL_NOTICES, INITIAL_MEDIA_ITEMS 
 } from "../initialContent";
+import StorageImageUploader from "./StorageImageUploader";
 
 interface AdminDashboardProps {
   onSiteConfigUpdate: (config: SiteConfig) => void;
@@ -33,6 +34,8 @@ interface AdminDashboardProps {
   onNoticesUpdate: (notices: Notice[]) => void;
   galleryAlbums: GalleryAlbum[];
   onGalleryAlbumsUpdate: (albums: GalleryAlbum[]) => void;
+  certificateTemplate: CertificateTemplate;
+  onTemplateUpdate: (template: CertificateTemplate) => void;
 }
 
 export default function AdminDashboard({
@@ -47,7 +50,9 @@ export default function AdminDashboard({
   notices,
   onNoticesUpdate,
   galleryAlbums,
-  onGalleryAlbumsUpdate
+  onGalleryAlbumsUpdate,
+  certificateTemplate,
+  onTemplateUpdate
 }: AdminDashboardProps) {
   
   // Auth States
@@ -80,9 +85,22 @@ export default function AdminDashboard({
     name: "", code: "", level: "UG", duration: "4 Years", eligibility: "", fees: "", description: "", branches: []
   });
 
+  const [certSubTab, setCertSubTab] = useState<"list" | "template">("list");
   const [showAddCertModal, setShowAddCertModal] = useState(false);
   const [newCert, setNewCert] = useState<Partial<Certificate>>({
-    certificateNo: "", enrollmentNo: "", studentName: "", course: "", grade: "9.0 CGPA", status: "Verified", remarks: ""
+    certificateNo: "", 
+    enrollmentNo: "", 
+    registrationNo: "",
+    studentName: "", 
+    fatherName: "",
+    course: "", 
+    specialization: "",
+    grade: "First Class with Distinction", 
+    cgpa: "9.00 CGPA",
+    passingYear: "2026",
+    issueDate: new Date().toISOString().split('T')[0],
+    status: "Verified", 
+    remarks: ""
   });
 
   const [showAddNoticeModal, setShowAddNoticeModal] = useState(false);
@@ -202,7 +220,7 @@ export default function AdminDashboard({
       notices,
       galleryAlbums,
       exportedAt: new Date().toISOString(),
-      branding: `${siteConfig?.universityName || "LS University"} Safety Registry`
+      branding: `${siteConfig?.universityName || "LAKSHMI SEHGAL UNIVERSITY"} Safety Registry`
     };
     const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -297,8 +315,8 @@ export default function AdminDashboard({
       id: cleanId,
       title: newPageTitle,
       slug: slugPlain,
-      seoTitle: `${newPageTitle} | ${siteConfig?.universityName || "LS University"}`,
-      seoDesc: `${siteConfig?.universityName || "LS University"} dynamic information page for ${newPageTitle}`,
+      seoTitle: `${newPageTitle} | ${siteConfig?.universityName || "LAKSHMI SEHGAL UNIVERSITY"}`,
+      seoDesc: `${siteConfig?.universityName || "LAKSHMI SEHGAL UNIVERSITY"} dynamic information page for ${newPageTitle}`,
       published: true,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -348,8 +366,8 @@ export default function AdminDashboard({
       onPagesUpdate(res);
       setSelectedPageId("home");
       triggerNotify("Page wiped from campus directory.");
-    } catch (e) {
-      triggerNotify("Failed to delete page document.");
+    } catch (e: any) {
+      triggerNotify(`Failed to delete page document: ${e?.message || e}`);
     } finally {
       setIsSyncing(false);
     }
@@ -370,8 +388,8 @@ export default function AdminDashboard({
       await setDoc(doc(db, "pages", newId), duplicate);
       onPagesUpdate([...allPages, duplicate]);
       triggerNotify("Dynamic clone created.");
-    } catch (e) {
-      triggerNotify("Cloning exception raised.");
+    } catch (e: any) {
+      triggerNotify(`Cloning exception raised: ${e?.message || e}`);
     } finally {
       setIsSyncing(false);
     }
@@ -384,8 +402,8 @@ export default function AdminDashboard({
       const patch = allPages.map(p => p.id === page.id ? { ...p, published: !p.published } : p);
       onPagesUpdate(patch);
       triggerNotify(`Status updated: ${!page.published ? "Live" : "Draft"}`);
-    } catch (e) {
-      triggerNotify("Publishing toggle failure.");
+    } catch (e: any) {
+      triggerNotify(`Publishing toggle failure: ${e?.message || e}`);
     } finally {
       setIsSyncing(false);
     }
@@ -401,8 +419,8 @@ export default function AdminDashboard({
       const res = allPages.map(p => p.id === updatedPage.id ? updatedPage : p);
       onPagesUpdate(res);
       triggerNotify("Section configuration committed to Cloud Firestore.");
-    } catch (e) {
-      triggerNotify("Failed to write to database.");
+    } catch (e: any) {
+      triggerNotify(`Failed to write section configuration to database: ${e?.message || e}`);
     } finally {
       setIsSyncing(false);
     }
@@ -513,8 +531,8 @@ export default function AdminDashboard({
       setShowAddCourseModal(false);
       setNewCourse({ name: "", code: "", level: "UG", duration: "4 Years", eligibility: "", fees: "", description: "" });
       triggerNotify("Program integrated into degree schema.");
-    } catch (e) {
-      triggerNotify("Exception writing course.");
+    } catch (e: any) {
+      triggerNotify(`Exception writing course: ${e?.message || e}`);
     } finally {
       setIsSyncing(false);
     }
@@ -527,8 +545,8 @@ export default function AdminDashboard({
       await deleteDoc(doc(db, "courses", courseId));
       onCoursesUpdate(courses.filter(c => c.id !== courseId));
       triggerNotify("Course purged.");
-    } catch (e) {
-      triggerNotify("Removal failure.");
+    } catch (e: any) {
+      triggerNotify(`Removal failure: ${e?.message || e}`);
     } finally {
       setIsSyncing(false);
     }
@@ -541,16 +559,34 @@ export default function AdminDashboard({
 
     setIsSyncing(true);
     const certid = `cert-${newCert.certificateNo.toLowerCase().replace(/\//g, "-")}`;
+    
+    // Format the date YYYY-MM-DD into Month DD, YYYY representation
+    let formattedIssueDate = newCert.issueDate || "";
+    if (formattedIssueDate.includes("-")) {
+      try {
+        const parts = formattedIssueDate.split("-");
+        if (parts.length === 3) {
+          const dateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+          formattedIssueDate = dateObj.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+        }
+      } catch (err) {}
+    }
+
     const finalCert: Certificate = {
       id: certid,
       certificateNo: newCert.certificateNo,
       enrollmentNo: newCert.enrollmentNo,
+      registrationNo: newCert.registrationNo || "",
       studentName: newCert.studentName,
+      fatherName: newCert.fatherName || "",
       course: newCert.course || "Degree program",
-      issueDate: newCert.issueDate || new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' }),
-      grade: newCert.grade || "9.0 CGPA",
+      specialization: newCert.specialization || "General",
+      grade: newCert.grade || "First Class with Distinction",
+      cgpa: newCert.cgpa || "",
+      passingYear: newCert.passingYear || "2026",
+      issueDate: formattedIssueDate || new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' }),
       status: (newCert.status as any) || "Verified",
-      qrCodeValue: `${newCert.certificateNo}|${newCert.enrollmentNo}|${newCert.studentName}|Verified|${siteConfig?.universityName || "LS University"} Security Registry`,
+      qrCodeValue: `${window.location.origin}${window.location.pathname}#/verify?id=${encodeURIComponent(newCert.certificateNo)}`,
       remarks: newCert.remarks || ""
     };
 
@@ -558,10 +594,24 @@ export default function AdminDashboard({
       await setDoc(doc(db, "certificates", certid), finalCert);
       onCertificatesUpdate([...certificates, finalCert]);
       setShowAddCertModal(false);
-      setNewCert({ certificateNo: "", enrollmentNo: "", studentName: "", course: "", grade: "9.0 CGPA", status: "Verified" });
+      setNewCert({ 
+        certificateNo: "", 
+        enrollmentNo: "", 
+        registrationNo: "",
+        studentName: "", 
+        fatherName: "",
+        course: "", 
+        specialization: "",
+        grade: "First Class with Distinction", 
+        cgpa: "9.00 CGPA",
+        passingYear: "2026",
+        issueDate: new Date().toISOString().split('T')[0],
+        status: "Verified",
+        remarks: ""
+      });
       triggerNotify("Academic Certificate uploaded.");
-    } catch (e) {
-      triggerNotify("Upload conflict.");
+    } catch (e: any) {
+      triggerNotify(`Certificate upload conflict: ${e?.message || e}`);
     } finally {
       setIsSyncing(false);
     }
@@ -574,8 +624,21 @@ export default function AdminDashboard({
       await deleteDoc(doc(db, "certificates", id));
       onCertificatesUpdate(certificates.filter(c => c.id !== id));
       triggerNotify("Certificate removed.");
-    } catch (e) {
-      triggerNotify("Deletion error.");
+    } catch (e: any) {
+      triggerNotify(`Deletion error: ${e?.message || e}`);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const handleSaveTemplate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSyncing(true);
+    try {
+      await setDoc(doc(db, "certificate_templates", "main_template"), certificateTemplate);
+      triggerNotify("Certificate Visual Template saved successfully!");
+    } catch (err: any) {
+      triggerNotify(`Error updating template settings: ${err?.message || err}`);
     } finally {
       setIsSyncing(false);
     }
@@ -602,8 +665,8 @@ export default function AdminDashboard({
       setShowAddNoticeModal(false);
       setNewNotice({ title: "", category: "Academic", priority: "Normal", description: "" });
       triggerNotify("Administration announcement registered.");
-    } catch (e) {
-      triggerNotify("Publish trigger failed.");
+    } catch (e: any) {
+      triggerNotify(`Publish trigger failed: ${e?.message || e}`);
     } finally {
       setIsSyncing(false);
     }
@@ -616,8 +679,8 @@ export default function AdminDashboard({
       await deleteDoc(doc(db, "notices", id));
       onNoticesUpdate(notices.filter(n => n.id !== id));
       triggerNotify("Notice scrubbed.");
-    } catch (e) {
-      triggerNotify("Exception triggered.");
+    } catch (e: any) {
+      triggerNotify(`Exception triggered while scrubbing notice: ${e?.message || e}`);
     } finally {
       setIsSyncing(false);
     }
@@ -631,8 +694,8 @@ export default function AdminDashboard({
       await setDoc(doc(db, "site_config", "main_settings"), siteConfig);
       onSiteConfigUpdate(siteConfig);
       triggerNotify("Site-wide configuration compiled.");
-    } catch (e) {
-      triggerNotify("Firestore configuration write block.");
+    } catch (e: any) {
+      triggerNotify(`Firestore configuration write block: ${e?.message || e}`);
     } finally {
       setIsSyncing(false);
     }
@@ -667,7 +730,7 @@ export default function AdminDashboard({
               CMS ADMINISTRATIVE ACCESS
             </h2>
             <p className="text-xs text-gray-400 font-mono">
-              {siteConfig?.universityName || "LS University"} Portal Centralized CMS Gateway
+              {siteConfig?.universityName || "LAKSHMI SEHGAL UNIVERSITY"} Portal Centralized CMS Gateway
             </p>
           </div>
 
@@ -867,7 +930,7 @@ export default function AdminDashboard({
                 <h1 className="text-3xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-white block to-[#D4AF37]">
                   ADMINISTRATION SUMMARY
                 </h1>
-                <p className="text-xs text-gray-400 font-mono mt-1">Real-time status metrics of {siteConfig?.universityName || "LS University"} dynamic database nodes.</p>
+                <p className="text-xs text-gray-400 font-mono mt-1">Real-time status metrics of {siteConfig?.universityName || "LAKSHMI SEHGAL UNIVERSITY"} dynamic database nodes.</p>
               </div>
               <div className="text-xs font-mono bg-slate-900 border border-[#D4AF37]/20 rounded px-3 py-1.5 flex items-center gap-1.5 text-gray-300">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
@@ -1231,6 +1294,15 @@ export default function AdminDashboard({
                                         }}
                                         className="w-full bg-slate-900 border border-white/15 rounded px-3 py-2 text-white font-mono"
                                       />
+                                      <StorageImageUploader 
+                                        currentUrl={secToEdit.content.bgImage || ""}
+                                        onUrlChange={(url) => {
+                                          const updatedList = activePage.sections.map(s => s.id === selectedSectionId ? { ...s, content: { ...s.content, bgImage: url } } : s);
+                                          handleSavePageContent({ ...activePage, sections: updatedList });
+                                        }}
+                                        folder="page_sections"
+                                        label="Or Upload Cover Graphic"
+                                      />
                                     </div>
                                   </div>
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-white/5 pt-3">
@@ -1311,6 +1383,15 @@ export default function AdminDashboard({
                                             handleSavePageContent({ ...activePage, sections: updatedList });
                                           }}
                                           className="w-full bg-slate-900 border border-white/15 rounded px-3 py-2 text-white cursor-pointer"
+                                        />
+                                        <StorageImageUploader 
+                                          currentUrl={secToEdit.content.imageUrl || ""}
+                                          onUrlChange={(url) => {
+                                            const updatedList = activePage.sections.map(s => s.id === selectedSectionId ? { ...s, content: { ...s.content, imageUrl: url } } : s);
+                                            handleSavePageContent({ ...activePage, sections: updatedList });
+                                          }}
+                                          folder="page_sections"
+                                          label="Or Upload Panel Graphic"
                                         />
                                       </div>
                                       <div>
@@ -1793,6 +1874,12 @@ export default function AdminDashboard({
                     onChange={(e) => onSiteConfigUpdate({ ...siteConfig, logoUrl: e.target.value })}
                     className="w-full bg-slate-950 border border-white/15 rounded px-3 py-2.5 text-white font-mono"
                   />
+                  <StorageImageUploader 
+                    currentUrl={siteConfig.logoUrl}
+                    onUrlChange={(url) => onSiteConfigUpdate({ ...siteConfig, logoUrl: url })}
+                    folder="university_identity"
+                    label="Or Upload/Drag Logo to Storage"
+                  />
                 </div>
                 <div>
                   <label className="block text-gray-400 mb-1">National Accreditations & Slogans (NIRF/NAAC/NBA)</label>
@@ -2241,64 +2328,509 @@ export default function AdminDashboard({
           </div>
         )}
 
-        {/* --- CERTIFICATE SECURE REGISTRY --- */}
+        {/* --- CERTIFICATE SECURE REGISTRY & TEMPLATE CMS --- */}
         {activeTab === "certs" && (
-          <div className="space-y-8 animate-fadeIn" id="cms-certs-tab">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="space-y-6 animate-fadeIn" id="cms-certs-tab">
+            
+            {/* Header & Master Action */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-4">
               <div>
                 <h1 className="text-2xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-[#D4AF37] uppercase">
-                  Academic Credentials Registry
+                  Academic Credentials Desk
                 </h1>
-                <p className="text-xs text-gray-400 mt-1">Upload issued student degrees, CGPA, serial metrics and generate verified QR records.</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  Issue student degrees, search archival registrations, and configure visual layout design formats.
+                </p>
               </div>
+              
+              {certSubTab === "list" && (
+                <button
+                  onClick={() => setShowAddCertModal(true)}
+                  className="px-4 py-2 bg-gradient-to-r from-[#D4AF37] to-[#C29E30] text-black font-bold text-xs rounded uppercase tracking-wider flex items-center gap-1.5 cursor-pointer hover:brightness-110 active:scale-95 transition-all shadow-md"
+                >
+                  <Plus className="w-4 h-4" /> Issue Certificate
+                </button>
+              )}
+            </div>
+
+            {/* Sub-tab selection */}
+            <div className="flex border-b border-white/10 gap-6 text-sm">
               <button
-                onClick={() => setShowAddCertModal(true)}
-                className="px-4 py-2 bg-gradient-to-r from-[#D4AF37] to-[#C29E30] text-black font-bold text-xs rounded uppercase tracking-wider flex items-center gap-1.5 cursor-pointer"
+                onClick={() => setCertSubTab("list")}
+                className={`pb-3 px-1 font-semibold uppercase tracking-wider text-xs transition-all relative ${
+                  certSubTab === "list" ? "text-[#D4AF37] font-bold" : "text-gray-400 hover:text-white"
+                }`}
               >
-                <Plus className="w-4 h-4" /> Issue Certificate
+                Issued Registrations ({certificates.length})
+                {certSubTab === "list" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#D4AF37]" />}
+              </button>
+              <button
+                onClick={() => setCertSubTab("template")}
+                className={`pb-3 px-1 font-semibold uppercase tracking-wider text-xs transition-all relative ${
+                  certSubTab === "template" ? "text-[#D4AF37] font-bold" : "text-gray-400 hover:text-white"
+                }`}
+              >
+                Visual Template CMS
+                {certSubTab === "template" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#D4AF37]" />}
               </button>
             </div>
 
-            <div className="bg-slate-900 border border-[#D4AF37]/20 rounded-xl overflow-hidden shadow-lg">
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="bg-slate-950 text-[#D4AF37] font-mono border-b border-[#D4AF37]/15">
-                    <th className="p-4 uppercase tracking-wider">Credential ID</th>
-                    <th className="p-4 uppercase tracking-wider">Enrollment ID</th>
-                    <th className="p-4 uppercase tracking-wider">Student Name</th>
-                    <th className="p-4 uppercase tracking-wider">Degree track / Course</th>
-                    <th className="p-4 uppercase tracking-wider">CGPA/Division</th>
-                    <th className="p-4 uppercase tracking-wider">Status</th>
-                    <th className="p-4 uppercase tracking-wider text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5 text-gray-300">
-                  {certificates.map((cert) => (
-                    <tr key={cert.id} className="hover:bg-white/[0.02] transition-colors">
-                      <td className="p-4 font-mono font-bold text-white">{cert.certificateNo}</td>
-                      <td className="p-4 font-mono text-gray-400">{cert.enrollmentNo}</td>
-                      <td className="p-4 font-semibold text-white">{cert.studentName}</td>
-                      <td className="p-4">{cert.course}</td>
-                      <td className="p-4 font-mono">{cert.grade}</td>
-                      <td className="p-4">
-                        <span className="bg-emerald-900/30 text-emerald-400 px-2 py-0.5 border border-emerald-500/20 rounded font-semibold text-[10px]">
-                          {cert.status}
-                        </span>
-                      </td>
-                      <td className="p-4 text-right">
-                        <button
-                          onClick={() => handleDeleteCert(cert.id)}
-                          className="p-1 px-1.5 text-rose-400 hover:text-white hover:bg-rose-600 rounded transition-colors text-[10px]"
-                          title="Revoke credential"
-                        >
-                          Revoke
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            {/* 1. Sub-Tab: INDEXED LISTED DEGREES */}
+            {certSubTab === "list" && (
+              <div className="bg-slate-900 border border-[#D4AF37]/20 rounded-xl overflow-hidden shadow-lg">
+                <div className="p-4 bg-slate-950 border-b border-white/5 flex justify-between items-center text-[10px] font-mono text-gray-400 uppercase tracking-wider">
+                  <span>Cryptographic Ledger Registries</span>
+                  <span>Active Count: {certificates.length}</span>
+                </div>
+                
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-slate-950/50 text-[#D4AF37] font-mono border-b border-white/5">
+                        <th className="p-4 uppercase tracking-wider">Serial No.</th>
+                        <th className="p-4 uppercase tracking-wider">Enrollment ID</th>
+                        <th className="p-4 uppercase tracking-wider">Registration Code</th>
+                        <th className="p-4 uppercase tracking-wider">Student Name</th>
+                        <th className="p-4 uppercase tracking-wider">Degree Track & Specialization</th>
+                        <th className="p-4 uppercase tracking-wider">Issue Date</th>
+                        <th className="p-4 uppercase tracking-wider">GPA/Class</th>
+                        <th className="p-4 uppercase tracking-wider text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5 text-gray-300">
+                      {certificates.length === 0 ? (
+                        <tr>
+                          <td colSpan={8} className="p-8 text-center text-gray-500 italic font-mono uppercase">
+                            No credentials recorded. Click &quot;Issue Certificate&quot; to seed registry.
+                          </td>
+                        </tr>
+                      ) : (
+                        certificates.map((cert) => (
+                          <tr key={cert.id} className="hover:bg-white/[0.02] transition-colors">
+                            <td className="p-4 font-mono font-bold text-white select-all">{cert.certificateNo}</td>
+                            <td className="p-4 font-mono text-gray-400 select-all">{cert.enrollmentNo}</td>
+                            <td className="p-4 font-mono text-gray-400 select-all">{cert.registrationNo || "N/A"}</td>
+                            <td className="p-4 font-semibold text-white">
+                              <div>{cert.studentName}</div>
+                              {cert.fatherName && <div className="text-[10px] text-gray-400 font-normal">S/o: {cert.fatherName}</div>}
+                            </td>
+                            <td className="p-4">
+                              <div className="font-medium text-slate-200">{cert.course}</div>
+                              {cert.specialization && <div className="text-[10px] text-[#D4AF37]/80">{cert.specialization}</div>}
+                            </td>
+                            <td className="p-4 font-mono text-slate-350">{cert.issueDate}</td>
+                            <td className="p-4 font-mono">
+                              <div>{cert.grade}</div>
+                              {cert.cgpa && <div className="text-[10px] text-gray-400">CGPA: {cert.cgpa}</div>}
+                            </td>
+                            <td className="p-4 text-right">
+                              <div className="flex gap-2 justify-end">
+                                <a
+                                  href={`#/verify?id=${encodeURIComponent(cert.certificateNo)}`}
+                                  className="p-1 px-2 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500 hover:text-white rounded text-[10px] uppercase font-bold"
+                                >
+                                  View
+                                </a>
+                                <button
+                                  onClick={() => handleDeleteCert(cert.id)}
+                                  className="p-1 px-2 border border-rose-500/30 text-rose-400 hover:bg-rose-500 hover:text-white rounded text-[10px] uppercase font-bold transition-all"
+                                >
+                                  Void
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* 2. Sub-Tab: VISUAL TEMPLATE BUILDER */}
+            {certSubTab === "template" && (
+              <form onSubmit={handleSaveTemplate} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                {/* Form controls (Left 6 - col span 6) */}
+                <div className="lg:col-span-6 bg-slate-900 border border-[#D4AF37]/20 rounded-xl p-5 md:p-6 space-y-4">
+                  <div className="border-b border-white/5 pb-2 flex justify-between items-center">
+                    <h3 className="text-xs uppercase font-mono tracking-wider text-[#D4AF37] font-semibold flex items-center gap-2">
+                      <Database className="w-4 h-4" /> Layout Parameter controls
+                    </h3>
+                    <button
+                      type="submit"
+                      disabled={isSyncing}
+                      className="px-4 py-2 bg-[#D4AF37] hover:bg-[#C29E30] text-black font-bold text-xs uppercase rounded tracking-wider flex items-center gap-1 cursor-pointer transition-all disabled:opacity-50"
+                    >
+                      <Save className="w-3.5 h-3.5" /> Save Changes
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    
+                    <div className="md:col-span-2">
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">University Official name</label>
+                      <input 
+                        type="text"
+                        value={certificateTemplate.universityName || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, universityName: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white"
+                        placeholder="e.g. LAKSHMI SEHGAL UNIVERSITY"
+                        required
+                      />
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">University Address Section</label>
+                      <input 
+                        type="text"
+                        value={certificateTemplate.address || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, address: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white"
+                        placeholder="e.g. Sector 128, Expressway, NCR, Noida 201304"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">Contact Numbers</label>
+                      <input 
+                        type="text"
+                        value={certificateTemplate.contactNumber || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, contactNumber: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white font-mono"
+                        placeholder="e.g. +91-11-4091-6200"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">Website coordinate</label>
+                      <input 
+                        type="text"
+                        value={certificateTemplate.website || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, website: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white font-mono"
+                        placeholder="e.g. www.lsu.edu.in"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">Official admissions Email</label>
+                      <input 
+                        type="text"
+                        value={certificateTemplate.email || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, email: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white font-mono"
+                        placeholder="e.g. admissions@lsu.edu.in"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">logo Image URL</label>
+                      <input 
+                        type="text"
+                        value={certificateTemplate.logoUrl || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, logoUrl: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white font-mono"
+                        placeholder="HTTP Image reference"
+                      />
+                      <StorageImageUploader 
+                        currentUrl={certificateTemplate.logoUrl || ""}
+                        onUrlChange={(url) => onTemplateUpdate({ ...certificateTemplate, logoUrl: url })}
+                        folder="certificate_templates"
+                        label="Or Upload/Drag Certificate Logo"
+                      />
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">Accreditations Details</label>
+                      <input 
+                        type="text"
+                        value={certificateTemplate.accreditationBadge || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, accreditationBadge: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white"
+                        placeholder="e.g. UGC Sec 2(f) | NAAC A++ Grade (CGPA 3.82)"
+                      />
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">Certificate Display Title</label>
+                      <input 
+                        type="text"
+                        value={certificateTemplate.certificateTitle || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, certificateTitle: e.target.value })}
+                        className="w-full bg-[#1A050B] border border-[#D4AF37]/35 rounded px-3 py-2 text-white font-bold"
+                        placeholder="e.g. OFFICIAL TRANSCRIPT & DEGREE DECREE"
+                        required
+                      />
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-[#D4AF37] mb-1 font-semibold uppercase tracking-wider text-[9.5px]">
+                        Structured Text Content Layout Templates
+                      </label>
+                      <textarea 
+                        value={certificateTemplate.certificateContent || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, certificateContent: e.target.value })}
+                        className="w-full h-32 bg-slate-950 border border-white/10 rounded px-3 py-2 text-white text-[11px] leading-relaxed font-serif"
+                        placeholder="This is to certify that [STUDENT_NAME] child of [FATHER_NAME]..."
+                        required
+                      />
+                      <span className="text-[9.5px] text-gray-500 leading-relaxed block mt-1">
+                        Supported dynamic tokens replaced at render time: <code className="text-[#D4AF37] bg-white/5 font-mono px-0.5 rounded">[STUDENT_NAME]</code>, <code className="text-[#D4AF37] bg-white/5 font-mono px-0.5 rounded">[FATHER_NAME]</code>, <code className="text-[#D4AF37] bg-white/5 font-mono px-0.5 rounded">[ENROLLMENT_NO]</code>, <code className="text-[#D4AF37] bg-white/5 font-mono px-0.5 rounded">[REGISTRATION_NO]</code>, <code className="text-[#D4AF37] bg-white/5 font-mono px-0.5 rounded">[COURSE_NAME]</code>, <code className="text-[#D4AF37] bg-white/5 font-mono px-0.5 rounded">[SPECIALIZATION]</code>, <code className="text-[#D4AF37] bg-white/5 font-mono px-0.5 rounded">[GRADE]</code>, <code className="text-[#D4AF37] bg-white/5 font-mono px-0.5 rounded">[CGPA]</code>, <code className="text-[#D4AF37] bg-white/5 font-mono px-0.5 rounded">[PASSING_YEAR]</code>.
+                      </span>
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">Registrar Name</label>
+                      <input 
+                        type="text"
+                        value={certificateTemplate.registrarName || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, registrarName: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white"
+                        placeholder="e.g. Dr. Sandeep Pathak"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">Registrar Signature image</label>
+                      <input 
+                        type="text"
+                        value={certificateTemplate.signatureImage1 || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, signatureImage1: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white font-mono"
+                        placeholder="Registrar Signature PNG image URL (mix-blend)"
+                      />
+                      <StorageImageUploader 
+                        currentUrl={certificateTemplate.signatureImage1 || ""}
+                        onUrlChange={(url) => onTemplateUpdate({ ...certificateTemplate, signatureImage1: url })}
+                        folder="certificate_signatures"
+                        label="Or Upload/Drag Registrar Signature"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">Vice Chancellor Name</label>
+                      <input 
+                        type="text"
+                        value={certificateTemplate.viceChancellorName || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, viceChancellorName: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white"
+                        placeholder="e.g. Prof. G.S. Prasad"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">VC Signature image</label>
+                      <input 
+                        type="text"
+                        value={certificateTemplate.signatureImage2 || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, signatureImage2: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white font-mono"
+                        placeholder="VC Signature PNG image URL (mix-blend)"
+                      />
+                      <StorageImageUploader 
+                        currentUrl={certificateTemplate.signatureImage2 || ""}
+                        onUrlChange={(url) => onTemplateUpdate({ ...certificateTemplate, signatureImage2: url })}
+                        folder="certificate_signatures"
+                        label="Or Upload/Drag VC Signature"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">Seal / Stamp visual URL</label>
+                      <input 
+                        type="text"
+                        value={certificateTemplate.sealStampImage || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, sealStampImage: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white font-mono"
+                        placeholder="Seal PNG image URL"
+                      />
+                      <StorageImageUploader 
+                        currentUrl={certificateTemplate.sealStampImage || ""}
+                        onUrlChange={(url) => onTemplateUpdate({ ...certificateTemplate, sealStampImage: url })}
+                        folder="certificate_seals"
+                        label="Or Upload/Drag Seal Stamp"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">QR Code Position</label>
+                      <select
+                        value={certificateTemplate.qrCodePosition || "bottom-right"}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, qrCodePosition: e.target.value as any })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white"
+                      >
+                        <option value="bottom-right">Bottom Right</option>
+                        <option value="bottom-left">Bottom Left</option>
+                        <option value="bottom-center">Bottom Center</option>
+                        <option value="top-right">Top Right (Absolute)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">Frame Border style Preset</label>
+                      <select
+                        value={certificateTemplate.certificateBackground || "classic-border"}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, certificateBackground: e.target.value as any })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white font-semibold"
+                      >
+                        <option value="classic-border">Classic Academy (Royal Burgundy & Gold)</option>
+                        <option value="modern-gold">Geometric Elegance (Stoneware Dark Gold)</option>
+                        <option value="royal-accent">Imperial Velvet Navy (Deep Blue & Silk)</option>
+                        <option value="bordered-clean">Corporate Fine double Gold line</option>
+                      </select>
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-gray-400 mb-1 font-semibold uppercase tracking-wider text-[9px]">Footer Disclaimer Legend Text</label>
+                      <input 
+                        type="text"
+                        value={certificateTemplate.certificateFooter || ""}
+                        onChange={(e) => onTemplateUpdate({ ...certificateTemplate, certificateFooter: e.target.value })}
+                        className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white"
+                        placeholder="e.g. Secured via central military blockchain network registry"
+                      />
+                    </div>
+
+                  </div>
+                </div>
+
+                {/* Live visual preview Sandbox (Right 6 - col span 6) */}
+                <div className="lg:col-span-6 bg-slate-950 border-2 border-dashed border-[#D4AF37]/35 rounded-xl p-4 md:p-6 space-y-4">
+                  <div className="flex justify-between items-center pb-2 border-b border-white/5">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-gray-400 flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" /> Real-time Visual verification Mock
+                    </span>
+                    <span className="text-[9px] font-mono bg-white/5 text-gray-350 px-2 py-0.5 rounded">
+                      Width Responsive Template Frame
+                    </span>
+                  </div>
+
+                  {/* Sandbox rendering */}
+                  <div className="border border-white/10 shadow-2xl rounded-lg p-4 bg-zinc-900 overflow-hidden relative" id="sandbox-viewport">
+                    <div className={`p-4 md:p-6 text-center space-y-3 relative overflow-hidden text-xs rounded border border-light ${
+                      certificateTemplate.certificateBackground === "modern-gold" ? "bg-stone-900 border-[8px] border-amber-950 text-stone-300" :
+                      certificateTemplate.certificateBackground === "royal-accent" ? "bg-slate-900 border-[8px] border-[#58111A] text-slate-100" :
+                      certificateTemplate.certificateBackground === "bordered-clean" ? "bg-zinc-50 border-[4px] border-[#D4AF37] text-stone-900" :
+                      "bg-white border-[8px] border-[#58111A] text-gray-700"
+                    }`}>
+                      
+                      {/* Inner hairline */}
+                      <div className="absolute inset-1 border border-[#D4AF37]/30 pointer-events-none" />
+
+                      {/* Top Right absolute QR position in Mock preview */}
+                      {certificateTemplate.qrCodePosition === "top-right" && (
+                        <div className="absolute top-2 right-2 text-[8px] border border-gray-400 p-1 bg-black text-white rounded font-mono uppercase scale-75">
+                          QR MOCK
+                        </div>
+                      )}
+
+                      {/* Logo and Uni details */}
+                      <div className="flex flex-col items-center space-y-0.5">
+                        {certificateTemplate.logoUrl ? (
+                          <img src={certificateTemplate.logoUrl} alt="prev_logo" className="w-8 h-8 rounded-full object-contain mx-auto mix-blend-multiply" referrerPolicy="no-referrer" />
+                        ) : (
+                          <div className="w-8 h-8 bg-[#58111A]/20 rounded-full flex items-center justify-center text-[#D4AF37]"><Award className="w-5 h-5" /></div>
+                        )}
+                        <h4 className="text-xs font-serif font-extrabold uppercase mt-1 leading-tight tracking-wider">
+                          {certificateTemplate.universityName || "LAKSHMI SEHGAL UNIVERSITY"}
+                        </h4>
+                        <p className="text-[7.5px] text-gray-405 leading-none font-mono max-w-sm cut-text">{certificateTemplate.address}</p>
+                        {certificateTemplate.accreditationBadge && (
+                          <span className="text-[6.5px] scale-90 text-[#D4AF37] font-mono tracking-wide uppercase bg-black/5 px-2 py-0.5 rounded border border-[#D4AF37]/10 inline-block mt-0.5">
+                            {certificateTemplate.accreditationBadge}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Mock Core Student coordinates */}
+                      <div className="space-y-1">
+                        <span className="text-[8px] text-gray-400 italic block">This is to declare with high credit that</span>
+                        <h5 className="text-sm font-serif font-semibold text-[#58111A] tracking-wide">
+                          Aditya Vardhan Dixit
+                        </h5>
+                        <p className="text-[8.5px] text-gray-500 font-sans leading-none">
+                          Child of <strong>Shri Rajesh Dixit</strong> &bull; Enrollment: <strong>LSU2022CSE402</strong>
+                        </p>
+                      </div>
+
+                      {/* Dynamic Substitutions Content preview */}
+                      <div className="space-y-1 max-w-md mx-auto py-1 border-t border-b border-gray-150-soft">
+                        <h6 className="text-[7.5px] font-mono tracking-widest text-[#D4AF37] font-bold uppercase select-none">
+                          {certificateTemplate.certificateTitle || "TRANSCRIPT DEGREE"}
+                        </h6>
+                        <p className="text-[8.5px] font-serif italic text-gray-500 leading-normal line-clamp-4">
+                          {/* Substitute standard mock value fields */}
+                          {(certificateTemplate.certificateContent || "")
+                            .replace(/\[STUDENT_NAME\]/gi, "Aditya Vardhan Dixit")
+                            .replace(/\[FATHER_NAME\]/gi, "Shri Rajesh Dixit")
+                            .replace(/\[ENROLLMENT_NO\]/gi, "LSU2022CSE402")
+                            .replace(/\[REGISTRATION_NO\]/gi, "REG-2022-CSE-402")
+                            .replace(/\[COURSE_NAME\]/gi, "Bachelor of Technology")
+                            .replace(/\[SPECIALIZATION\]/gi, "Computer Science & Engineering")
+                            .replace(/\[GRADE\]/gi, "First Class with Distinction")
+                            .replace(/\[CGPA\]/gi, "9.82 CGPA")
+                            .replace(/\[PASSING_YEAR\]/gi, "2025")
+                          }
+                        </p>
+                      </div>
+
+                      {/* Signature block mock */}
+                      <div className="grid grid-cols-4 gap-2 text-center pt-2 justify-items-center items-end text-[7px] leading-tight">
+                        <div className="w-full">
+                          <span className="block border-b border-gray-300 pb-0.5 select-all font-mono">June 14, 2025</span>
+                          <span className="text-[5.5px] text-gray-400 uppercase font-mono mt-0.5 block">Issue Date</span>
+                        </div>
+                        <div className="w-full">
+                          <span className="block italic h-4 flex items-end justify-center text-slate-800 font-serif font-medium">{certificateTemplate.registrarName || "Registrar"}</span>
+                          <span className="block border-t border-gray-350 select-none font-bold text-gray-900 mt-0.5 uppercase tracking-wide">REGISTRAR</span>
+                        </div>
+                        <div className="w-full">
+                          <span className="block italic h-4 flex items-end justify-center text-slate-800 font-serif font-medium">{certificateTemplate.viceChancellorName || "V.C."}</span>
+                          <span className="block border-t border-gray-350 select-none font-bold text-gray-900 mt-0.5 uppercase tracking-wide">VICE CHANCELLOR</span>
+                        </div>
+                        <div className="w-full flex flex-col items-center">
+                          {certificateTemplate.sealStampImage ? (
+                            <img src={certificateTemplate.sealStampImage} alt="sealstamp" className="h-4 object-contain mx-auto" />
+                          ) : (
+                            <div className="w-4 h-4 bg-amber-500/10 rounded-full flex items-center justify-center"><Award className="w-3.5 h-3.5 text-[#D4AF37]/50" /></div>
+                          )}
+                          <span className="text-[5.5px] text-gray-400 uppercase font-mono mt-0.5 block">Official Seal</span>
+                        </div>
+                      </div>
+
+                      {/* Bottom row mock */}
+                      <div className="flex justify-between items-center pt-1 border-t border-gray-100">
+                        {certificateTemplate.qrCodePosition !== "top-right" && (
+                          <div className={`text-[8px] font-mono uppercase bg-black text-white p-1 rounded tracking-widest scale-75 select-none ${
+                            certificateTemplate.qrCodePosition === "bottom-left" ? "order-1" :
+                            certificateTemplate.qrCodePosition === "bottom-center" ? "mx-auto order-2" : "order-3"
+                          }`}>
+                            QR CODE MOCK
+                          </div>
+                        )}
+                        <p className={`text-[7px] text-gray-400 text-left italic font-serif leading-none mt-1 max-w-xs ${
+                          certificateTemplate.qrCodePosition === "bottom-left" ? "order-3" : "order-2"
+                        }`}>
+                          {certificateTemplate.certificateFooter}
+                        </p>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div className="bg-[#1C160C] border border-[#D4AF37]/40 rounded-lg p-4 text-[#D4AF37] space-y-1.5 text-xs">
+                    <p className="font-bold flex items-center gap-1"><Info className="w-4 h-4" /> Template Layout Instructions</p>
+                    <p className="text-gray-300 leading-normal text-[11px]">
+                      The visual styles, borders, text mappings, and positions configured here apply instantly across the whole university platform. Try searching for <code className="bg-black/30 px-1 font-mono rounded">LSU-9283-1029</code> inside the verification page to view the live rendering.
+                    </p>
+                  </div>
+                </div>
+
+              </form>
+            )}
+
           </div>
         )}
 
@@ -2488,14 +3020,14 @@ export default function AdminDashboard({
           ADD STUDENT CERTIFICATE WIDGET
           ======================================================== */}
       {showAddCertModal && (
-        <div className="fixed inset-0 z-50 bg-[#030712]/90 backdrop-blur-sm flex items-center justify-center p-4">
-          <form onSubmit={handleAddCertificate} className="w-full max-w-md bg-[#0A192F] border-2 border-[#D4AF37] text-white p-6 rounded-xl space-y-6 shadow-2xl">
-            <div className="border-b border-white/10 pb-3 flex justify-between items-center">
+        <div className="fixed inset-0 z-50 bg-[#030712]/90 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <form onSubmit={handleAddCertificate} className="w-full max-w-lg bg-[#0A192F] border-2 border-[#D4AF37] text-white p-6 rounded-xl space-y-4 shadow-2xl my-8">
+            <div className="border-b border-white/10 pb-2 flex justify-between items-center">
               <h3 className="text-sm font-bold uppercase font-mono tracking-wider text-[#D4AF37]">Issue Academic credential</h3>
               <button type="button" onClick={() => setShowAddCertModal(false)} className="text-gray-400 hover:text-white">✕</button>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div>
                 <label className="block text-gray-400 mb-1">Unique Serial Code (No spaces)</label>
                 <input 
@@ -2511,11 +3043,21 @@ export default function AdminDashboard({
                 <label className="block text-gray-400 mb-1">Student Enrollment ID</label>
                 <input 
                   type="text"
-                  placeholder="e.g. LS2023CSE011"
+                  placeholder="e.g. LSU2022CSE402"
                   value={newCert.enrollmentNo || ""}
                   onChange={(e) => setNewCert({ ...newCert, enrollmentNo: e.target.value.toUpperCase().replace(/\s+/g, '') })}
                   className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 font-mono"
                   required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 mb-1">Student Registration No.</label>
+                <input 
+                  type="text"
+                  placeholder="e.g. REG-201-4402"
+                  value={newCert.registrationNo || ""}
+                  onChange={(e) => setNewCert({ ...newCert, registrationNo: e.target.value.toUpperCase() })}
+                  className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 font-mono"
                 />
               </div>
               <div>
@@ -2530,43 +3072,99 @@ export default function AdminDashboard({
                 />
               </div>
               <div>
-                <label className="block text-gray-400 mb-1">Course awarded</label>
+                <label className="block text-gray-400 mb-1">Father's Name</label>
                 <input 
                   type="text"
-                  placeholder="e.g. B.Tech in CSE (Artificial Intelligence)"
+                  placeholder="e.g. Shri Rajesh Dixit"
+                  value={newCert.fatherName || ""}
+                  onChange={(e) => setNewCert({ ...newCert, fatherName: e.target.value })}
+                  className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 mb-1">Course / Degree Awarded</label>
+                <input 
+                  type="text"
+                  placeholder="e.g. Bachelor of Technology"
                   value={newCert.course || ""}
                   onChange={(e) => setNewCert({ ...newCert, course: e.target.value })}
                   className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2"
                   required
                 />
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-gray-400 mb-1">Grade / Class division</label>
-                  <input 
-                    type="text"
-                    placeholder="e.g. 9.6 CGPA"
-                    value={newCert.grade || ""}
-                    onChange={(e) => setNewCert({ ...newCert, grade: e.target.value })}
-                    className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-400 mb-1">Status</label>
-                  <select
-                    value={newCert.status || "Verified"}
-                    onChange={(e) => setNewCert({ ...newCert, status: e.target.value as any })}
-                    className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white"
-                  >
-                    <option value="Verified">Verified</option>
-                    <option value="Revoked">Revoked / Suspended</option>
-                    <option value="Suspended">Suspended</option>
-                  </select>
-                </div>
+              <div>
+                <label className="block text-gray-400 mb-1">Specialization Section</label>
+                <input 
+                  type="text"
+                  placeholder="e.g. Computer Science & Engineering"
+                  value={newCert.specialization || ""}
+                  onChange={(e) => setNewCert({ ...newCert, specialization: e.target.value })}
+                  className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 mb-1">Passing Year</label>
+                <input 
+                  type="text"
+                  placeholder="e.g. 2025"
+                  value={newCert.passingYear || ""}
+                  onChange={(e) => setNewCert({ ...newCert, passingYear: e.target.value })}
+                  className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 font-mono"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 mb-1">Cumulative Evaluation (CGPA)</label>
+                <input 
+                  type="text"
+                  placeholder="e.g. 9.82 CGPA"
+                  value={newCert.cgpa || ""}
+                  onChange={(e) => setNewCert({ ...newCert, cgpa: e.target.value })}
+                  className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 font-mono"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 mb-1">Class Grade Division</label>
+                <input 
+                  type="text"
+                  placeholder="e.g. First Class with Distinction"
+                  value={newCert.grade || ""}
+                  onChange={(e) => setNewCert({ ...newCert, grade: e.target.value })}
+                  className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 mb-1">Dedicated Issue Date Picker</label>
+                <input 
+                  type="date"
+                  value={newCert.issueDate || ""}
+                  onChange={(e) => setNewCert({ ...newCert, issueDate: e.target.value })}
+                  className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white font-mono focus:outline-none focus:border-[#D4AF37]"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 mb-1">Verification Status</label>
+                <select
+                  value={newCert.status || "Verified"}
+                  onChange={(e) => setNewCert({ ...newCert, status: e.target.value as any })}
+                  className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white"
+                >
+                  <option value="Verified">Verified</option>
+                  <option value="Revoked">Revoked / Suspended</option>
+                  <option value="Suspended">Suspended</option>
+                </select>
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-gray-400 mb-1">Dean Remarks / Additional Notes</label>
+                <textarea 
+                  placeholder="Remarks shown during certificate inspection"
+                  value={newCert.remarks || ""}
+                  onChange={(e) => setNewCert({ ...newCert, remarks: e.target.value })}
+                  className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 h-16 text-white text-xs focus:ring-1 focus:ring-[#D4AF37] focus:outline-none"
+                />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2.5 text-xs">
+            <div className="flex justify-end gap-2.5 text-xs pt-2">
               <button type="button" onClick={() => setShowAddCertModal(false)} className="px-4 py-2 bg-slate-800 rounded">Cancel</button>
               <button type="submit" className="px-5 py-2 bg-[#D4AF37] text-black font-semibold rounded hover:bg-[#C29E30]">Issue Node</button>
             </div>
@@ -2744,6 +3342,18 @@ function MediaManagerPanel({ mediaItems, triggerNotify }: MediaManagerPanelProps
                 onChange={e => setUrl(e.target.value)}
                 className="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white focus:outline-none focus:border-[#D4AF37] font-mono"
                 required
+              />
+              <StorageImageUploader 
+                currentUrl={url}
+                onUrlChange={(uploadedUrl) => {
+                  setUrl(uploadedUrl);
+                  if (!name) {
+                    const filename = uploadedUrl.split("/").pop()?.split("?")[0] || "Uploaded Asset";
+                    setName(decodeURIComponent(filename));
+                  }
+                }}
+                folder="media_vault"
+                label="Or Drag/Drop to Upload directly to Storage"
               />
             </div>
             <div>

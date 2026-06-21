@@ -82,13 +82,39 @@ export interface Certificate {
   id: string;
   certificateNo: string;
   enrollmentNo: string;
+  registrationNo?: string;
   studentName: string;
+  fatherName?: string;
   course: string;
+  specialization?: string;
+  grade: string;
+  cgpa?: string;
+  passingYear?: string;
   issueDate: string;
-  grade: string; // e.g. "9.2 CGPA" or "First Class with Distinction"
   status: "Verified" | "Revoked" | "Suspended";
   qrCodeValue: string;
   remarks?: string;
+}
+
+export interface CertificateTemplate {
+  id: string; // static ID like "main_template"
+  universityName: string;
+  address: string;
+  contactNumber: string;
+  website: string;
+  email: string;
+  accreditationBadge: string;
+  logoUrl: string;
+  certificateTitle: string;
+  certificateContent: string;
+  signatureImage1: string;
+  registrarName: string;
+  signatureImage2: string;
+  viceChancellorName: string;
+  sealStampImage: string;
+  qrCodePosition: "top-right" | "bottom-left" | "bottom-right" | "bottom-center";
+  certificateBackground: "classic-border" | "modern-gold" | "royal-accent" | "bordered-clean";
+  certificateFooter: string;
 }
 
 export interface MediaItem {

@@ -162,32 +162,86 @@
           "type": "string",
           "description": "Student registration/roll number"
         },
+        "registrationNo": {
+          "type": "string",
+          "description": "Student official university index registration number"
+        },
         "studentName": {
           "type": "string",
           "description": "Legal student name"
         },
+        "fatherName": {
+          "type": "string",
+          "description": "Father's name of the student"
+        },
         "course": {
           "type": "string",
-          "description": "Course/Degree verified"
+          "description": "Course/Degree verified (e.g. Bachelor of Technology)"
+        },
+        "specialization": {
+          "type": "string",
+          "description": "Specialization category"
+        },
+        "grade": {
+          "type": "string",
+          "description": "Class/division grade description"
+        },
+        "cgpa": {
+          "type": "string",
+          "description": "Actual cumulative evaluation (e.g. 9.8 CGPA)"
+        },
+        "passingYear": {
+          "type": "string",
+          "description": "Year of program passing"
         },
         "issueDate": {
           "type": "string",
           "description": "Formatted date of issue"
         },
-        "grade": {
-          "type": "string",
-          "description": "CGPA / Division"
-        },
         "status": {
           "type": "string",
-          "description": "Verifications status (e.g. Verified, Revoked)"
+          "description": "Verification status (e.g. Verified, Revoked)"
+        },
+        "qrCodeValue": {
+          "type": "string",
+          "description": "Verification ledger code content"
         }
       },
       "required": [
         "certificateNo",
         "enrollmentNo",
         "studentName",
-        "course"
+        "course",
+        "issueDate"
+      ]
+    },
+    "certificate_templates": {
+      "title": "Certificate Templates",
+      "description": "Main configurable layout parameters loaded for visual diplomas.",
+      "type": "object",
+      "properties": {
+        "universityName": { "type": "string" },
+        "address": { "type": "string" },
+        "contactNumber": { "type": "string" },
+        "website": { "type": "string" },
+        "email": { "type": "string" },
+        "accreditationBadge": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "certificateTitle": { "type": "string" },
+        "certificateContent": { "type": "string" },
+        "signatureImage1": { "type": "string" },
+        "registrarName": { "type": "string" },
+        "signatureImage2": { "type": "string" },
+        "viceChancellorName": { "type": "string" },
+        "sealStampImage": { "type": "string" },
+        "qrCodePosition": { "type": "string" },
+        "certificateBackground": { "type": "string" },
+        "certificateFooter": { "type": "string" }
+      },
+      "required": [
+        "universityName",
+        "certificateTitle",
+        "certificateContent"
       ]
     },
     "media": {
@@ -268,6 +322,10 @@
     "/certificates/{certId}": {
       "schema": "certificates",
       "description": "Credential registry for verifications"
+    },
+    "/certificate_templates/{templateId}": {
+      "schema": "certificate_templates",
+      "description": "Configuration details for visual academic diplomas"
     },
     "/media/{mediaId}": {
       "schema": "media",

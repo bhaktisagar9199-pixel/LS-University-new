@@ -1,8 +1,8 @@
-import { SiteConfig, PageData, Course, Certificate, Notice, MediaItem, GalleryAlbum } from "./types";
+import { SiteConfig, PageData, Course, Certificate, Notice, MediaItem, GalleryAlbum, CertificateTemplate } from "./types";
 
 export const INITIAL_SITE_CONFIG: SiteConfig = {
-  universityName: "LS University",
-  logoText: "LS UNIVERSITY",
+  universityName: "LAKSHMI SEHGAL UNIVERSITY",
+  logoText: "LAKSHMI SEHGAL UNIVERSITY",
   logoUrl: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=160&auto=format&fit=crop&q=80",
   accreditationBadge: "Govt Approved UGC Under Sec 2(f) | NAAC A++ Accredited (CGPA 3.82) | NIRF Top 30",
   contactEmail: "admissions@lsu.edu.in",
@@ -10,8 +10,8 @@ export const INITIAL_SITE_CONFIG: SiteConfig = {
   address: "Lakshmi Sehgal Knowledge Estates, Sector 128, Noida-Greater Noida Expressway, NCR 201304, India",
   goldAccentColor: "#D4AF37", // Premium Gold
   primaryThemeColor: "#58111A", // Royal Burgundy
-  seoTitle: "LS University | Admissions, Courses, Placements",
-  seoDescription: "LS University offers B.Tech, BCA, MCA, MBA, BBA, BA, B.Com and B.Sc programs with modern campus facilities.",
+  seoTitle: "LAKSHMI SEHGAL UNIVERSITY | Admissions, Courses, Placements",
+  seoDescription: "LAKSHMI SEHGAL UNIVERSITY offers B.Tech, BCA, MCA, MBA, BBA, BA, B.Com and B.Sc programs with modern campus facilities.",
   socialLinks: {
     facebook: "https://facebook.com/lsu_india",
     twitter: "https://twitter.com/lsu_india",
@@ -84,8 +84,8 @@ export const INITIAL_PAGES: PageData[] = [
     id: "home",
     title: "Home",
     slug: "",
-    seoTitle: "LS University | Premium Tech Campus NCR",
-    seoDesc: "Experience high-fidelity learning models at LS University. Advanced computer labs, direct placement tracks.",
+    seoTitle: "LAKSHMI SEHGAL UNIVERSITY | Admissions, Courses, Placements",
+    seoDesc: "LAKSHMI SEHGAL UNIVERSITY offers B.Tech, BCA, MCA, MBA, BBA, BA, B.Com and B.Sc programs with modern campus facilities.",
     published: true,
     createdAt: "2026-06-14T00:00:00.000Z",
     updatedAt: "2026-06-14T00:00:00.000Z",
@@ -93,7 +93,7 @@ export const INITIAL_PAGES: PageData[] = [
       {
         id: "sec-home-hero",
         type: "hero",
-        title: "LS University",
+        title: "LAKSHMI SEHGAL UNIVERSITY",
         subtitle: "SHAPING SCIENTIFIC PIONEERS AND TECH ARCHITECTS",
         content: {
           tagline: "An elite smart research campus offering advanced software development pipelines, strategic finance systems, and robust multidisciplinary domains.",
@@ -123,7 +123,7 @@ export const INITIAL_PAGES: PageData[] = [
         type: "infosection",
         title: "The Intellectual Sanctuary of Future Innovators",
         content: {
-          desc: "LS University is designed to eliminate academic silos. In partnership with industry leaders, our intensive curricula leverage real-world cases, advanced laboratories, and high-performance research clusters. Our premium spaces and dedicated faculty transition you from a digital consumer to an architect of global tech platforms.",
+          desc: "LAKSHMI SEHGAL UNIVERSITY is designed to eliminate academic silos. In partnership with industry leaders, our intensive curricula leverage real-world cases, advanced laboratories, and high-performance research clusters. Our premium spaces and dedicated faculty transition you from a digital consumer to an architect of global tech platforms.",
           imageUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=80",
           layout: "text-left",
           buttonText: "Accreditation Portfolio",
@@ -188,8 +188,8 @@ export const INITIAL_PAGES: PageData[] = [
     id: "about",
     title: "About Us",
     slug: "about",
-    seoTitle: "Chancellery Board & Vision | LS University",
-    seoDesc: "Discover the leadership team, Chancellor's vision, and National Accreditations of LS University.",
+    seoTitle: "Chancellery Board & Vision | LAKSHMI SEHGAL UNIVERSITY",
+    seoDesc: "Discover the leadership team, Chancellor's vision, and National Accreditations of LAKSHMI SEHGAL UNIVERSITY.",
     published: true,
     createdAt: "2026-06-14T00:00:00.000Z",
     updatedAt: "2026-06-14T00:00:00.000Z",
@@ -200,7 +200,7 @@ export const INITIAL_PAGES: PageData[] = [
         title: "The LSU Legacy & Creed",
         subtitle: "ACADEMIC INTELLECT, COLLABORATIVE FREEDOM, LEADERSHIP",
         content: {
-          tagline: "LS University structures autonomous research teams dedicated to bypassing bureaucratic hoops and engineering state-of-the-art societal frameworks.",
+          tagline: "LAKSHMI SEHGAL UNIVERSITY structures autonomous research teams dedicated to bypassing bureaucratic hoops and engineering state-of-the-art societal frameworks.",
           bgImage: "https://images.unsplash.com/photo-1562774053-701939374585?w=1600&auto=format&fit=crop&q=80",
           ctaText1: "Explore Course Catalog",
           ctaLink1: "/courses"
@@ -211,7 +211,7 @@ export const INITIAL_PAGES: PageData[] = [
         type: "infosection",
         title: "Desk of the Chancellor: Dr. Arvind Sinha",
         content: {
-          desc: "Our mission is to establish an elite academic tech sanctuary, nurturing talent that drives the nation's scientific evolution. By investing in carbon-neutral campuses, modern clean-energy labs, and direct cloud collaborations, we guarantee our graduates lead corporate spheres immediately upon graduation. LS University stands as a monument to scientific persistence.",
+          desc: "Our mission is to establish an elite academic tech sanctuary, nurturing talent that drives the nation's scientific evolution. By investing in carbon-neutral campuses, modern clean-energy labs, and direct cloud collaborations, we guarantee our graduates lead corporate spheres immediately upon graduation. LAKSHMI SEHGAL UNIVERSITY stands as a monument to scientific persistence.",
           imageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&auto=format&fit=crop&q=80",
           layout: "text-right",
           buttonText: "Register Consultation Profile",
@@ -346,27 +346,58 @@ export const INITIAL_CERTIFICATES: Certificate[] = [
     id: "cert-1",
     certificateNo: "LSU-9283-1029",
     enrollmentNo: "LSU2022CSE402",
+    registrationNo: "REG-2022-CSE-402",
     studentName: "Aditya Vardhan Dixit",
-    course: "B.Tech Computer Science & Engineering",
+    fatherName: "Shri Rajesh Dixit",
+    course: "Bachelor of Technology",
+    specialization: "Computer Science & Engineering",
+    grade: "First Class with Distinction",
+    cgpa: "9.82 CGPA",
+    passingYear: "2025",
     issueDate: "June 14, 2025",
-    grade: "9.82 CGPA",
     status: "Verified",
-    qrCodeValue: "LSU-9283-1029|LSU2022CSE402|Aditya Vardhan Dixit|B.Tech CSE|Verified|LS University Security Registry",
+    qrCodeValue: "LSU-9283-1029|LSU2022CSE402|Aditya Vardhan Dixit|B.Tech CSE|Verified|LAKSHMI SEHGAL UNIVERSITY Security Registry",
     remarks: "Ranked 3rd in the CSE batch. Recipient of Dean's Scientific Roll of Honour."
   },
   {
     id: "cert-2",
     certificateNo: "LSU-1129-9238",
     enrollmentNo: "LSU2023MBA045",
+    registrationNo: "REG-2023-MBA-045",
     studentName: "Priyanka Chandani",
-    course: "MBA Digital Business & Strategy",
+    fatherName: "Shri Kamal Chandani",
+    course: "Master of Business Administration",
+    specialization: "Digital Business & Strategy",
+    grade: "First Class with Distinction",
+    cgpa: "9.45 CGPA",
+    passingYear: "2025",
     issueDate: "June 14, 2025",
-    grade: "9.45 CGPA",
     status: "Verified",
-    qrCodeValue: "LSU-1129-9238|LSU2023MBA045|Priyanka Chandani|MBA Digital Business|Verified|LS University Security Registry",
+    qrCodeValue: "LSU-1129-9238|LSU2023MBA045|Priyanka Chandani|MBA Digital Business|Verified|LAKSHMI SEHGAL UNIVERSITY Security Registry",
     remarks: "Elected President of LSU Fintech Council. Outstanding Innovation Awardee."
   }
 ];
+
+export const INITIAL_CERTIFICATE_TEMPLATE: CertificateTemplate = {
+  id: "main_template",
+  universityName: "LAKSHMI SEHGAL UNIVERSITY",
+  address: "Lakshmi Sehgal Knowledge Estates, Sector 128, Noida-Greater Noida Expressway, NCR 201304, India",
+  contactNumber: "+91-11-4091-6200 | +91-9871-33-2288",
+  website: "www.lsu.edu.in",
+  email: "admissions@lsu.edu.in",
+  accreditationBadge: "Govt Approved UGC Under Sec 2(f) | NAAC A++ Accredited (CGPA 3.82) | NIRF Top 30",
+  logoUrl: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=160&auto=format&fit=crop&q=80",
+  certificateTitle: "OFFICIAL TRANSCRIPT & DEGREE DECREE",
+  certificateContent: "This is to certify that [STUDENT_NAME], child of [FATHER_NAME], having Enrollment Number [ENROLLMENT_NO] and Registration Number [REGISTRATION_NO], has successfully completed the authorized curriculum prescribed for the program [COURSE_NAME] with Specialization in [SPECIALIZATION]. Following strict evaluation of academic accomplishments, this degree certificate is issued with a grade of [GRADE] and CGPA evaluations of [CGPA] in the passing year [PASSING_YEAR]. Conferred with all honors and privileges pertaining thereto.",
+  signatureImage1: "", // will support draw/upload and defaults
+  registrarName: "Dr. Sandeep Pathak",
+  signatureImage2: "",
+  viceChancellorName: "Prof. G.S. Prasad",
+  sealStampImage: "",
+  qrCodePosition: "bottom-right",
+  certificateBackground: "classic-border",
+  certificateFooter: "This transcript degree record is secured via official LSU Ledger Registry. Check verification coordinates directly via standard portal protocols."
+};
 
 export const INITIAL_NOTICES: Notice[] = [
   {

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { onSnapshot, collection, doc, setDoc } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType, firebaseMetadata, firebaseEnvError, isDevMode } from "./firebase";
-import { SiteConfig, PageData, Course, Certificate, Notice, GalleryAlbum } from "./types";
+import { SiteConfig, PageData, Course, Certificate, Notice, GalleryAlbum, CertificateTemplate } from "./types";
 import { 
-  INITIAL_SITE_CONFIG, INITIAL_PAGES, INITIAL_COURSES, INITIAL_CERTIFICATES, INITIAL_NOTICES, INITIAL_GALLERY_ALBUMS 
+  INITIAL_SITE_CONFIG, INITIAL_PAGES, INITIAL_COURSES, INITIAL_CERTIFICATES, INITIAL_NOTICES, INITIAL_GALLERY_ALBUMS, INITIAL_CERTIFICATE_TEMPLATE
 } from "./initialContent";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -23,6 +23,7 @@ export default function App() {
   const [certificates, setCertificates] = useState<Certificate[]>(INITIAL_CERTIFICATES);
   const [notices, setNotices] = useState<Notice[]>(INITIAL_NOTICES);
   const [galleryAlbums, setGalleryAlbums] = useState<GalleryAlbum[]>(INITIAL_GALLERY_ALBUMS);
+  const [certificateTemplate, setCertificateTemplate] = useState<CertificateTemplate>(INITIAL_CERTIFICATE_TEMPLATE);
 
   // Connection & Loading indicators
   const [isDbLoaded, setIsDbLoaded] = useState(false);
@@ -48,16 +49,13 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // --- FIRESTORE REALTIME SYNC (onSnapshot) WITH AUTOMATIC PERSISTENT INITIAL SEEDING ---
+  // --- FIRESTORE REALTIME SYNC (onSnapshot) ---
   useEffect(() => {
     
     // 1. Site Config Sync
     const unsubConfig = onSnapshot(doc(db, "site_config", "main_settings"), (snap) => {
       if (snap.exists()) {
         setSiteConfig(snap.data() as SiteConfig);
-      } else if (isDevMode) {
-        // Automatically seed empty Firestore only in local development
-        setDoc(doc(db, "site_config", "main_settings"), INITIAL_SITE_CONFIG).catch((err) => console.warn(err));
       }
     }, (err) => {
       console.warn("Using offline brand config template.", err);
@@ -73,11 +71,6 @@ export default function App() {
         // Sort home first if available, otherwise chronologically
         list.sort((a, b) => (a.slug === "" ? -1 : b.slug === "" ? 1 : 0));
         setPages(list);
-      } else if (isDevMode) {
-        // Automatically seed empty Firestore only in local development
-        INITIAL_PAGES.forEach((pg) => {
-          setDoc(doc(db, "pages", pg.id), pg).catch((err) => console.warn(err));
-        });
       }
     }, (err) => {
       console.warn("Using offline dynamic sitemap pages.", err);
@@ -91,11 +84,6 @@ export default function App() {
           list.push({ id: docSnap.id, ...docSnap.data() } as Course);
         });
         setCourses(list);
-      } else if (isDevMode) {
-        // Automatically seed empty Firestore only in local development
-        INITIAL_COURSES.forEach((crs) => {
-          setDoc(doc(db, "courses", crs.id), crs).catch((err) => console.warn(err));
-        });
       }
     }, (err) => {
       console.warn("Using offline degree curriculum catalog.", err);
@@ -109,11 +97,6 @@ export default function App() {
           list.push({ id: docSnap.id, ...docSnap.data() } as Certificate);
         });
         setCertificates(list);
-      } else if (isDevMode) {
-        // Automatically seed empty Firestore only in local development
-        INITIAL_CERTIFICATES.forEach((cert) => {
-          setDoc(doc(db, "certificates", cert.id), cert).catch((err) => console.warn(err));
-        });
       }
     }, (err) => {
       console.warn("Using offline academic verification certificates.", err);
@@ -129,11 +112,6 @@ export default function App() {
         // Sort newest published date first
         list.sort((a, b) => b.date.localeCompare(a.date));
         setNotices(list);
-      } else if (isDevMode) {
-        // Automatically seed empty Firestore only in local development
-        INITIAL_NOTICES.forEach((n) => {
-          setDoc(doc(db, "notices", n.id), n).catch((err) => console.warn(err));
-        });
       }
     }, (err) => {
       console.warn("Using offline administration bulletin timeline.", err);
@@ -148,14 +126,18 @@ export default function App() {
         });
         list.sort((a, b) => a.order - b.order);
         setGalleryAlbums(list);
-      } else if (isDevMode) {
-        // Automatically seed empty Firestore only in local development
-        INITIAL_GALLERY_ALBUMS.forEach((album) => {
-          setDoc(doc(db, "gallery_albums", album.id), album).catch((err) => console.warn(err));
-        });
       }
     }, (err) => {
       console.warn("Using offline gallery albums.", err);
+    });
+
+    // 7. Certificate Template Document Sync
+    const unsubTemplate = onSnapshot(doc(db, "certificate_templates", "main_template"), (snap) => {
+      if (snap.exists()) {
+        setCertificateTemplate(snap.data() as CertificateTemplate);
+      }
+    }, (err) => {
+      console.warn("Using offline certificate template config.", err);
     });
 
     setIsDbLoaded(true);
@@ -167,6 +149,7 @@ export default function App() {
       unsubCerts();
       unsubNotices();
       unsubGallery();
+      unsubTemplate();
     };
   }, []);
 
@@ -183,6 +166,7 @@ export default function App() {
         <CertificateVerification 
           certificates={certificates} 
           config={siteConfig}
+          template={certificateTemplate}
         />
       );
     }
@@ -217,12 +201,14 @@ export default function App() {
           certificates={certificates}
           notices={notices}
           galleryAlbums={galleryAlbums}
+          certificateTemplate={certificateTemplate}
           onSiteConfigUpdate={setSiteConfig}
           onPagesUpdate={setPages}
           onCoursesUpdate={setCourses}
           onCertificatesUpdate={setCertificates}
           onNoticesUpdate={setNotices}
           onGalleryAlbumsUpdate={setGalleryAlbums}
+          onTemplateUpdate={setCertificateTemplate}
         />
       );
     }
